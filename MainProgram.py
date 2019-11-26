@@ -1,6 +1,7 @@
 # MainProject
 
 # Dejina linija koda
+#Commit
 
 from PyQt5.QtWidgets import QApplication
 import sys
