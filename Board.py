@@ -18,7 +18,7 @@ class Board(QFrame):
         #self.setGeometry(200, 200, 600, 600)
         self.setWindowTitle('Donkey kong')
 
-        self.setStyleSheet("QFrame { background-color: %s}" % QColor(0,0,255).name())
+        self.setStyleSheet("QFrame { background-color: %s}" % QColor(0,0,0).name())
 
         self.show()
 
