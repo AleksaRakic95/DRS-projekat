@@ -16,7 +16,7 @@ class Board(QFrame):
         self.resize(800,600)
         self.center()
         #self.setGeometry(200, 200, 600, 600)
-        self.setWindowTitle('Donkey kong')
+        self.setWindowTitle('Donkey Kong')
 
         self.setStyleSheet("QFrame { background-color: %s}" % QColor(0,0,0).name())
 
