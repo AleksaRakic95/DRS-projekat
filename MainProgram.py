@@ -6,9 +6,10 @@ from PyQt5.QtWidgets import QApplication
 import sys
 
 from Board import Board
+from StartWindow import StartWindow
 
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)
-    board = Board()
+    startWindow = StartWindow()
     sys.exit(app.exec_())
