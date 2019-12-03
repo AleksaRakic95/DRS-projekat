@@ -4,6 +4,7 @@ from PyQt5.Qt import Qt
 from PyQt5.QtCore import QSize
 from Board import  Board
 import sys
+from Controls import Controls
 
 
 class StartWindow(QWidget):
@@ -35,7 +36,7 @@ class StartWindow(QWidget):
         self.setWindowTitle(self.title)
 
         self.label = QLabel(self)
-        pixmapFull = QPixmap('Asset/DonkeyKongLogo.jpg')
+        pixmapFull = QPixmap('Assets/DonkeyKongLogo.jpg')
         pixmapCropped = pixmapFull.scaled(800, 300, Qt.IgnoreAspectRatio, Qt.FastTransformation)
         self.label.setPixmap((QPixmap(pixmapCropped)))
 
@@ -55,4 +56,12 @@ class StartWindow(QWidget):
         self.close()
 
     def clickMethod2(self):
-        print("Controls")
+        #print("Controls")
+        #self.board.frame = QFrame()
+        #self.board.frame = Controls()
+        #self.board.show()
+        self.frame = Controls()
+        self.frame.show()
+        self.close()
+
+        #self.nesto = Controls()
