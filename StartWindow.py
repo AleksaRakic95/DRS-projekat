@@ -35,7 +35,7 @@ class StartWindow(QWidget):
         self.setWindowTitle(self.title)
 
         self.label = QLabel(self)
-        pixmapFull = QPixmap('Asset/DonkeyKongLogo.jpg')
+        pixmapFull = QPixmap('Assets/DonkeyKongLogo.jpg')
         pixmapCropped = pixmapFull.scaled(800, 300, Qt.IgnoreAspectRatio, Qt.FastTransformation)
         self.label.setPixmap((QPixmap(pixmapCropped)))
 
