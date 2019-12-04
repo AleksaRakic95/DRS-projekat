@@ -4,6 +4,7 @@ from PyQt5.Qt import Qt
 from PyQt5.QtCore import QSize
 from Board import  Board
 import sys
+from Controls import Controls, ControlsJump
 
 
 class StartWindow(QWidget):
@@ -55,4 +56,11 @@ class StartWindow(QWidget):
         self.close()
 
     def clickMethod2(self):
-        print("Controls")
+        #print("Controls")
+        #self.board.frame = QFrame()
+        #self.board.frame = Controls()
+        #self.board.show()
+        self.frame = Controls()
+        self.close()
+
+        #self.nesto = Controls()
