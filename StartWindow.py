@@ -16,6 +16,7 @@ class StartWindow(QWidget):
         self.setStyleSheet("QWidget { background-color: %s}" % QColor(0, 0, 0).name())
         self.resize(800, 600)
         self.center()
+        self.setFixedSize(800, 600)
 
         pybutton1 = QPushButton('Play', self)
         pybutton1.clicked.connect(self.clickMethod1)
