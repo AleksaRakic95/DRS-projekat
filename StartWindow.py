@@ -4,7 +4,7 @@ from PyQt5.Qt import Qt
 from PyQt5.QtCore import QSize
 from Board import  Board
 import sys
-from Controls import Controls
+from Controls import Controls, ControlsJump
 
 
 class StartWindow(QWidget):
@@ -61,7 +61,6 @@ class StartWindow(QWidget):
         #self.board.frame = Controls()
         #self.board.show()
         self.frame = Controls()
-        self.frame.show()
         self.close()
 
         #self.nesto = Controls()
