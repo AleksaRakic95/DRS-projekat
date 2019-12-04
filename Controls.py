@@ -1,6 +1,8 @@
 from PyQt5.QtWidgets import  QWidget, QPushButton, QFrame, QDesktopWidget, QLabel, QHBoxLayout, QVBoxLayout
-from PyQt5.QtGui import QColor, QPixmap, QFont
+from PyQt5.QtGui import QColor, QPixmap, QFont, QMovie
 from PyQt5.Qt import Qt, QElapsedTimer
+from PyQt5.QtCore import QByteArray
+
 import time
 
 class Controls(QFrame):
@@ -108,11 +110,14 @@ class ControlsJump(QFrame):
         pixmapCroppedSpace = pixmapSpace.scaled(300, 60, Qt.IgnoreAspectRatio, Qt.FastTransformation)
         self.label1.setPixmap((QPixmap(pixmapCroppedSpace)))
 
-        self.label2 = QLabel(self)
-        self.label2.move(350, 400)
-        pixmapJump = QPixmap('Assets/Controls/MarioStand.png')
-        pixmapCroppedJump = pixmapJump.scaled(60, 60, Qt.IgnoreAspectRatio, Qt.FastTransformation)
-        self.label2.setPixmap((QPixmap(pixmapCroppedJump)))
+        self.movie = QMovie("Assets/Controls/MarioJump.gif", QByteArray(), self)
+        self.movie_screen = QLabel(self)
+        self.movie_screen.setAlignment(Qt.AlignCenter)
+        self.movie_screen.setGeometry(350, 400, 60, 120)
+        self.movie.setCacheMode(QMovie.CacheAll)
+        self.movie_screen.setMovie(self.movie)
+        self.movie.start()
+        self.movie.loopCount()
 
         self.show()
 
