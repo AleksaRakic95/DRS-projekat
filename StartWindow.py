@@ -17,18 +17,23 @@ class StartWindow(QWidget):
         self.resize(800, 600)
         self.center()
 
-        pybutton1 = QPushButton('Play', self)
+        pybutton1 = QPushButton('New Game', self)
         pybutton1.clicked.connect(self.clickMethod1)
-        pybutton1.resize(100, 50)
-        pybutton1.move(350, 400)
-        pybutton1.setStyleSheet("QPushButton { background-color: %s}" % QColor(255, 255, 255).name())
+        pybutton1.resize(130, 50)
+        pybutton1.move(340, 400)
+        pybutton1.setStyleSheet("QPushButton { background-color: %s; "
+                                "color: white; "
+                                "font-family: Arcade Normal; font-weight: bold; font-size: 20px }" % QColor(0, 0, 0).name())
 
         pybutton2 = QPushButton('Controls', self)
         pybutton2.clicked.connect(self.clickMethod2)
-        pybutton2.resize(100, 50)
-        pybutton2.move(350, 500)
-        pybutton2.setStyleSheet("QPushButton { background-color: %s}" % QColor(255, 255, 255).name())
-
+        pybutton2.resize(130, 50)
+        pybutton2.move(340, 500)
+        #pybutton2.setStyleSheet("QPushButton { background-color: %s}" % QColor(255, 255, 255).name())
+        pybutton2.setStyleSheet("QPushButton { background-color: %s; "
+                                "color: white; "
+                                "font-family: Arcade Normal; font-weight: bold; font-size: 20px }" % QColor(0, 0,
+                                                                                                            0).name())
 
         self.initUI()
 
