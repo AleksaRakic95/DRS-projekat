@@ -2,9 +2,10 @@ from PyQt5.QtWidgets import QMainWindow, QFrame, QDesktopWidget, QApplication, Q
 from PyQt5.QtGui import QColor, QIcon, QPixmap, QImage, QFont
 from PyQt5.Qt import Qt
 from PyQt5.QtCore import QSize
-from Board import  Board
+from Board import Board
 import sys
 from Controls import Controls, ControlsJump
+from NumberOfPlayers import NumberOfPlayers
 
 
 class StartWindow(QWidget):
@@ -18,13 +19,19 @@ class StartWindow(QWidget):
         self.center()
         self.setFixedSize(800, 600)
 
+        font = QFont()
+        font.setFamily("Arcade Normal")
+        font.setPointSize(13);
+
         pybutton1 = QPushButton('New Game', self)
         pybutton1.clicked.connect(self.clickMethod1)
         pybutton1.resize(130, 50)
         pybutton1.move(340, 400)
         pybutton1.setStyleSheet("QPushButton { background-color: %s; "
                                 "color: white; "
-                                "font-family: Arcade Normal; font-weight: bold; font-size: 20px }" % QColor(0, 0, 0).name())
+                                "font-family: Arcade Normal; font-weight: bold; font-size: 20px }" % QColor(0, 0, 0).
+                                name())
+        pybutton1.setFont(font)
 
         pybutton2 = QPushButton('Controls', self)
         pybutton2.clicked.connect(self.clickMethod2)
@@ -57,7 +64,7 @@ class StartWindow(QWidget):
         self.move(qr.topLeft())
 
     def clickMethod1(self):
-        self.board = Board()
+        self.board = NumberOfPlayers()
         self.board.show()
         self.close()
 

@@ -1,6 +1,6 @@
 from PyQt5.QtWidgets import QMainWindow, QFrame, QDesktopWidget, QApplication
 from PyQt5.QtGui import QColor
-import  sys
+import sys
 
 
 class Board(QFrame):
@@ -13,12 +13,11 @@ class Board(QFrame):
         self.initBoard()
 
     def initBoard(self):
-        self.resize(800,600)
+        self.resize(800, 600)
         self.center()
-        #self.setGeometry(200, 200, 600, 600)
         self.setWindowTitle('Donkey Kong')
 
-        self.setStyleSheet("QFrame { background-color: %s}" % QColor(0,0,0).name())
+        self.setStyleSheet("QFrame { background-color: %s}" % QColor(0, 0, 0).name())
 
         self.show()
 

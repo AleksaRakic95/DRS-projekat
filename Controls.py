@@ -1,4 +1,4 @@
-from PyQt5.QtWidgets import  QWidget, QPushButton, QFrame, QDesktopWidget, QLabel, QHBoxLayout, QVBoxLayout
+from PyQt5.QtWidgets import QWidget, QPushButton, QFrame, QDesktopWidget, QLabel, QHBoxLayout, QVBoxLayout
 from PyQt5.QtGui import QColor, QPixmap, QFont, QMovie
 from PyQt5.Qt import Qt, QElapsedTimer
 from PyQt5.QtCore import QByteArray
