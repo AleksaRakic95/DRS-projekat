@@ -1,16 +1,16 @@
-from PyQt5.QtWidgets import QMainWindow, QFrame, QDesktopWidget, QApplication, QLabel, QWidget, QPushButton
-from PyQt5.QtGui import QColor, QIcon, QPixmap, QImage, QFont
+from PyQt5.QtWidgets import QMainWindow, QFrame, QDesktopWidget, QApplication, QWidget, QLabel, QLineEdit, QPushButton
+from PyQt5.QtGui import QColor, QPixmap, QFont
 from PyQt5.Qt import Qt
-from PyQt5.QtCore import QSize
-from OnePlayer import OnePlayer
-from TwoPlayers import TwoPlayers
 import sys
+from Board import Board
 
 
-class NumberOfPlayers(QWidget):
+class OnePlayer(QWidget):
 
     def __init__(self):
+
         super().__init__()
+
         self.title = 'Donkey Kong'
 
         self.setStyleSheet("QWidget { background-color: %s}" % QColor(0, 0, 0).name())
@@ -19,33 +19,35 @@ class NumberOfPlayers(QWidget):
         self.setFixedSize(800, 600)
 
         self.textLabel = QLabel(self)
-        self.textLabel.move(100, 300)
+        self.textLabel.move(250, 300)
         fontLabel = QFont()
         fontLabel.setFamily("Arcade Normal")
         fontLabel.setPointSize(20)
         self.textLabel.setStyleSheet('color: white;')
         self.textLabel.setFont(fontLabel)
-        self.textLabel.setText("Choose number of players")
+        self.textLabel.setText("Enter player name")
+
+        fontTB = QFont()
+        fontTB.setFamily("Arcade Normal")
+        fontTB.setPointSize(13)
+
+        self.textEdit = QLineEdit(self)
+        self.textEdit.resize(200,50)
+        self.textEdit.move(250, 400)
+        self.textEdit.setStyleSheet("QLineEdit { background-color: black; color: white; }")
+        self.textEdit.setFont(fontTB)
 
         fontBtn = QFont()
         fontBtn.setFamily("Arcade Normal")
         fontBtn.setPointSize(13)
 
-        onePlayerBtn = QPushButton('One Player', self)
-        onePlayerBtn.clicked.connect(self.onePlayer)
-        onePlayerBtn.resize(200, 50)
-        onePlayerBtn.move(310, 400)
-        onePlayerBtn.setStyleSheet("QPushButton:!hover { background-color: black; color: white;  }"
+        self.playBtn = QPushButton("Play", self)
+        self.playBtn.clicked.connect(self.startGame)
+        self.playBtn.resize(200, 50)
+        self.playBtn.move(250, 500)
+        self.playBtn.setStyleSheet("QPushButton:!hover { background-color: black; color: white;  }"
                                    "QPushButton:hover {background-color: black; color: red; }")
-        onePlayerBtn.setFont(fontBtn)
-
-        twoPlayersBtn = QPushButton('Two Players', self)
-        twoPlayersBtn.clicked.connect(self.twoPlayers)
-        twoPlayersBtn.resize(200, 50)
-        twoPlayersBtn.move(320, 500)
-        twoPlayersBtn.setStyleSheet("QPushButton:!hover { background-color: black; color: white; }"
-                                    "QPushButton:hover { background-color: black; color: red; }")
-        twoPlayersBtn.setFont(fontBtn)
+        self.playBtn.setFont(fontBtn)
 
         self.initUI()
 
@@ -68,12 +70,7 @@ class NumberOfPlayers(QWidget):
 
         self.move(qr.topLeft())
 
-    def onePlayer(self):
-        self.board = OnePlayer()
-        self.board.show()
+    def startGame(self):
+        playername = self.textEdit.text()
+        self.frame = Board()
         self.close()
-
-    def twoPlayers(self):
-        self.board = TwoPlayers()
-        self.close()
-

@@ -69,7 +69,6 @@ class Controls(QFrame):
             self.close()
             self.frame = ControlsJump()
 
-
     def center(self):
         qr = self.frameGeometry()
         cp = QDesktopWidget().availableGeometry().center()

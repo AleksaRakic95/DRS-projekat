@@ -3,6 +3,7 @@ from PyQt5.QtGui import QColor, QIcon, QPixmap, QImage, QFont
 from PyQt5.Qt import Qt
 from PyQt5.QtCore import QSize
 from Board import  Board
+from NumberOfPlayers import NumberOfPlayers
 import sys
 from Controls import Controls, ControlsJump
 
@@ -27,7 +28,8 @@ class StartWindow(QWidget):
         font.setPointSize(15)
         font.bold()
 
-        pybutton1.setStyleSheet("QPushButton { background-color: %s; color: white }" % QColor(0, 0, 0).name())
+        pybutton1.setStyleSheet("QPushButton:!hover { background-color: black; color: white; }"
+                                "QPushButton:hover { background-color: black; color: red; }")
         pybutton1.setFont(font)
 
         pybutton2 = QPushButton('Controls', self)
@@ -35,7 +37,8 @@ class StartWindow(QWidget):
         pybutton2.resize(160, 50)
         pybutton2.move(320, 500)
 
-        pybutton2.setStyleSheet("QPushButton { background-color: %s; color: white }" % QColor(0, 0, 0).name())
+        pybutton2.setStyleSheet("QPushButton:!hover { background-color: black; color: white; }"
+                                "QPushButton:hover { background-color: black; color: red; }")
         pybutton2.setFont(font)
 
         self.initUI()
@@ -59,16 +62,9 @@ class StartWindow(QWidget):
         self.move(qr.topLeft())
 
     def clickMethod1(self):
-        self.board = Board()
-        self.board.show()
+        self.board = NumberOfPlayers()
         self.close()
 
     def clickMethod2(self):
-        #print("Controls")
-        #self.board.frame = QFrame()
-        #self.board.frame = Controls()
-        #self.board.show()
         self.frame = Controls()
         self.close()
-
-        #self.nesto = Controls()
