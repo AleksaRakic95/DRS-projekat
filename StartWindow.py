@@ -1,5 +1,5 @@
 from PyQt5.QtWidgets import QMainWindow, QFrame, QDesktopWidget, QApplication, QLabel, QWidget, QPushButton
-from PyQt5.QtGui import QColor, QIcon, QPixmap, QImage
+from PyQt5.QtGui import QColor, QIcon, QPixmap, QImage, QFont
 from PyQt5.Qt import Qt
 from PyQt5.QtCore import QSize
 from Board import  Board
@@ -19,21 +19,24 @@ class StartWindow(QWidget):
 
         pybutton1 = QPushButton('New Game', self)
         pybutton1.clicked.connect(self.clickMethod1)
-        pybutton1.resize(130, 50)
-        pybutton1.move(340, 400)
-        pybutton1.setStyleSheet("QPushButton { background-color: %s; "
-                                "color: white; "
-                                "font-family: Arcade Normal; font-weight: bold; font-size: 20px }" % QColor(0, 0, 0).name())
+        pybutton1.resize(180, 50)
+        pybutton1.move(310, 400)
+
+        font = QFont()
+        font.setFamily("Arcade Normal")
+        font.setPointSize(15)
+        font.bold()
+
+        pybutton1.setStyleSheet("QPushButton { background-color: %s; color: white }" % QColor(0, 0, 0).name())
+        pybutton1.setFont(font)
 
         pybutton2 = QPushButton('Controls', self)
         pybutton2.clicked.connect(self.clickMethod2)
-        pybutton2.resize(130, 50)
-        pybutton2.move(340, 500)
-        #pybutton2.setStyleSheet("QPushButton { background-color: %s}" % QColor(255, 255, 255).name())
-        pybutton2.setStyleSheet("QPushButton { background-color: %s; "
-                                "color: white; "
-                                "font-family: Arcade Normal; font-weight: bold; font-size: 20px }" % QColor(0, 0,
-                                                                                                            0).name())
+        pybutton2.resize(160, 50)
+        pybutton2.move(320, 500)
+
+        pybutton2.setStyleSheet("QPushButton { background-color: %s; color: white }" % QColor(0, 0, 0).name())
+        pybutton2.setFont(font)
 
         self.initUI()
 
