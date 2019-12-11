@@ -64,6 +64,11 @@ class Controls(QFrame):
         #self.close()
         #frame = ControlsJump()
 
+
+
+
+
+
     def keyPressEvent(self, e):
         if e.key() == Qt.Key_N:
             self.close()

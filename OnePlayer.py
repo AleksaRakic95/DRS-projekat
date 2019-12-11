@@ -72,5 +72,5 @@ class OnePlayer(QWidget):
 
     def startGame(self):
         playername = self.textEdit.text()
-        self.frame = Board()
+        self.frame = Board(playername)
         self.close()

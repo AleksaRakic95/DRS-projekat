@@ -94,5 +94,5 @@ class TwoPlayers(QWidget):
     def startGame(self):
         fistPlayer = self.playerOne.text()
         secondPlayer = self.playerTwo.text()
-        self.frame = Board()
+        self.frame = Board(fistPlayer, secondPlayer)
         self.close()

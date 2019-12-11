@@ -1,5 +1,5 @@
-from PyQt5.QtWidgets import QMainWindow, QFrame, QDesktopWidget, QApplication, QLabel
-from PyQt5.QtGui import QColor, QPixmap, QMovie
+from PyQt5.QtWidgets import QMainWindow, QFrame, QDesktopWidget, QApplication, QLabel, QWidget
+from PyQt5.QtGui import QColor, QPixmap, QMovie, QPainter, QFont
 from PyQt5.QtCore import Qt, QByteArray
 import  sys
 
@@ -7,8 +7,11 @@ import  sys
 class Board(QFrame):
     BoardWidth = 200
     BoardHeight = 200
+    PocetnaDimenzija = 100
 
-    def __init__(self):
+    def __init__(self, playerOneName=None, playerTwoName=None):
+        self.nameOne = playerOneName
+        self.nameTwo = playerTwoName
         super().__init__()
 
         self.initBoard()
@@ -45,9 +48,21 @@ class Board(QFrame):
             for j in range(36):
                 self.PlatformList.append(self.setPlatform(platformImageCropped, i, j, sirina))
 
+        self.playerName()
         self.setBarrel()
+        self.setAvatar("Assets/Mario/right.png")
 
         self.show()
+
+    def playerName(self):
+        self.playerOne = QLabel(self)
+        fontLbl = QFont()
+        fontLbl.setFamily("Arcade Normal")
+        fontLbl.setPointSize(8)
+        self.playerOne.setText(self.nameOne)
+        self.playerOne.setFont(fontLbl)
+        self.playerOne.setStyleSheet("QLabel {color: white}")
+        self.playerOne.move(20,20)
 
     def setBorder(self, pixmapCropped, i, j, sirina, visina):
         label = QLabel(self)
@@ -90,6 +105,37 @@ class Board(QFrame):
         self.flameLabel.setMovie(self.movie)
         self.movie.start()
         self.movie.loopCount()
+
+    def setAvatar(self, naziv):
+        self.avatarLable = QLabel(self)
+        avatarImage = QPixmap(naziv)
+        avatarImageCropped = avatarImage.scaled(30,40, Qt.IgnoreAspectRatio, Qt.FastTransformation)
+        self.avatarLable.setPixmap(QPixmap(avatarImageCropped))
+        self.avatarLable.move(100, 545)
+
+    def setAvatarMove(self, naziv):
+        avatarImage = QPixmap(naziv)
+        avatarImageCropped = avatarImage.scaled(30,40, Qt.IgnoreAspectRatio, Qt.FastTransformation)
+        self.avatarLable.setPixmap(QPixmap(avatarImageCropped))
+
+    def keyPressEvent(self, event):
+        #super(Board, self).kretanje(event)
+        key = event.key()
+
+        self.brojac = 5
+
+        if key == Qt.Key_Right:
+
+            if self.PocetnaDimenzija < 755:
+                self.setAvatarMove("Assets/Mario/right.png")
+                self.PocetnaDimenzija = self.PocetnaDimenzija + self.brojac;
+                self.avatarLable.move(self.PocetnaDimenzija, 545)
+        elif key == Qt.Key_Left:
+            if self.PocetnaDimenzija > 81:
+                self.PocetnaDimenzija = self.PocetnaDimenzija - self.brojac;
+                #self.avatarLable.move(self.PocetnaDimenzija, 545)
+                self.setAvatarMove("Assets/Mario/left.png")
+                self.avatarLable.move(self.PocetnaDimenzija, 545)
 
     def center(self):
         qr = self.frameGeometry()
