@@ -19,7 +19,7 @@ class Board(QFrame):
         self.setWindowTitle('Donkey kong')
 
         self.setStyleSheet("QFrame { background-color: %s}" % QColor(0,0,255).name())
-
+        
         self.show()
 
     def center(self):
