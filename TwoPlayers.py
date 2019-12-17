@@ -2,7 +2,7 @@ from PyQt5.QtWidgets import QMainWindow, QFrame, QDesktopWidget, QApplication, Q
 from PyQt5.QtGui import QColor, QPixmap, QFont
 from PyQt5.Qt import Qt
 import sys
-from Board import Board
+from Board import BoardTwoPlayers
 
 
 class TwoPlayers(QWidget):
@@ -94,5 +94,5 @@ class TwoPlayers(QWidget):
     def startGame(self):
         fistPlayer = self.playerOne.text()
         secondPlayer = self.playerTwo.text()
-        self.frame = Board(fistPlayer, secondPlayer)
+        self.frame = BoardTwoPlayers(fistPlayer, secondPlayer)
         self.close()
