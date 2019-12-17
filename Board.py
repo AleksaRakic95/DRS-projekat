@@ -55,7 +55,15 @@ class Board(QFrame):
             for j in range(36):
                 self.PlatformList.append(self.setPlatform(platformImageCropped, i, j, sirina))
 
+        '''self.ladderlabel = QLabel(self)
+        ladderImage = QPixmap('Assets/Ladder/ladder.png')
+        ladderImageCropped = ladderImage.scaled(30, 70, Qt.IgnoreAspectRatio, Qt.FastTransformation)
+        self.ladderlabel.setPixmap(QPixmap(ladderImageCropped))
+        self.ladderlabel.move(685,515)'''
+
+        self.setPrincess()
         self.playerName()
+        self.setLadder()
         self.setBarrel()
         self.setAvatar("Assets/Mario/right.png")
 
@@ -98,6 +106,61 @@ class Board(QFrame):
 
         return label
 
+    def setPrincess(self):
+        self.movie = QMovie("Assets/Princess/Princess.gif", QByteArray(), self)
+        self.princessLabel = QLabel(self)
+        self.princessLabel.setGeometry(285, 95, 80, 40)
+        self.movie.setCacheMode(QMovie.CacheAll)
+        self.princessLabel.setMovie(self.movie)
+        self.movie.start()
+        self.movie.loopCount()
+
+    def setLadder(self):
+        ladderImage = QPixmap('Assets/Ladder/ladder.png')
+        ladderImageCropped = ladderImage.scaled(30, 70, Qt.IgnoreAspectRatio, Qt.FastTransformation)
+
+        ladderImage1 = QPixmap('Assets/Ladder/ladder2.png')
+        ladderImage2Cropped = ladderImage1.scaled(30, 70, Qt.IgnoreAspectRatio, Qt.FastTransformation)
+
+        brokenLadderImage = QPixmap('Assets/Ladder/brokenLadder.png')
+        brokenLadderImageCropped = brokenLadderImage.scaled(30, 70, Qt.IgnoreAspectRatio, Qt.FastTransformation)
+
+        # Merdevine na prvoj platformi
+        self.ladderPosition(ladderImageCropped, 685, 515)
+        self.brokenLadderPosition(brokenLadderImageCropped, 330, 515)
+
+        # Merdevine na drugoj platformi
+        self.ladderPosition(ladderImageCropped, 85, 425)
+        self.ladderPosition(ladderImageCropped, 400, 425)
+
+        # Merdevine na trecoj platformi
+        self.brokenLadderPosition(brokenLadderImageCropped, 470, 335)
+        self.ladderPosition(ladderImageCropped, 200, 335)
+        self.ladderPosition(ladderImageCropped, 615, 335)
+
+        # Merdevine na cetvrtoj platformi
+        self.brokenLadderPosition(brokenLadderImageCropped, 330, 245)
+        self.ladderPosition(ladderImageCropped, 704, 245)
+
+        # Merdevine na cetvrtoj platformi
+        self.ladderPosition(ladderImageCropped, 382, 155)
+        self.ladderPosition(ladderImageCropped, 241, 155)
+        self.ladderPosition(ladderImage2Cropped, 241, 85)
+        self.ladderPosition(ladderImage2Cropped, 241, 15)
+        self.ladderPosition(ladderImageCropped, 191, 155)
+        self.ladderPosition(ladderImage2Cropped, 191, 85)
+        self.ladderPosition(ladderImage2Cropped, 191, 15)
+
+    def ladderPosition(self, ladderImageCropped, x, y):
+        self.ladderlabel = QLabel(self)
+        self.ladderlabel.setPixmap(QPixmap(ladderImageCropped))
+        self.ladderlabel.move(x, y)  # x=685, y=515
+
+    def brokenLadderPosition(self, brokenLadderImageCropped, x, y):
+        self.brokenLadderlabel = QLabel(self)
+        self.brokenLadderlabel.setPixmap(QPixmap(brokenLadderImageCropped))
+        self.brokenLadderlabel.move(x, y)  # x=350, y=515
+
     def setBarrel(self):
         self.barrelLable = QLabel(self)
         barrelImage = QPixmap('Assets/Brick/Barel.png')
@@ -112,6 +175,12 @@ class Board(QFrame):
         self.flameLabel.setMovie(self.movie)
         self.movie.start()
         self.movie.loopCount()
+
+        self.FourBurrellabel = QLabel(self)
+        barrel4Image = QPixmap('Assets/Barrel/Burrel4.png')
+        barrel4ImageCropped = barrel4Image.scaled(50, 70, Qt.IgnoreAspectRatio, Qt.FastTransformation)
+        self.FourBurrellabel.setPixmap(QPixmap(barrel4ImageCropped))
+        self.FourBurrellabel.move(25, 155)
 
     def setAvatar(self, naziv):
         self.avatarLable = QLabel(self)
@@ -219,7 +288,7 @@ class BoardTwoPlayers(QFrame):
 
         self.playerNames()
         self.setBarrel()
-        self.setAvatars("Assets/Mario/right.png", "Assets/Mario/left1.png")
+        self.setAvatars("Assets/Mario/right.png", "Assets/Mario/left.png")
 
         self.show()
 
@@ -286,12 +355,14 @@ class BoardTwoPlayers(QFrame):
     def setAvatars(self, avatarOne, avatarTwo):
         self.avatarOneLbl = QLabel(self)
         avatarImageOne = QPixmap(avatarOne)
+        #avatarImageOne.fill(Qt.transparent)
         avatarImageOneCropped = avatarImageOne.scaled(30, 40, Qt.IgnoreAspectRatio, Qt.FastTransformation)
         self.avatarOneLbl.setPixmap(QPixmap(avatarImageOneCropped))
         self.avatarOneLbl.move(100, 545)
 
         self.avatarTwoLbl = QLabel(self)
         avatarImageTwo = QPixmap(avatarTwo)
+        #avatarImageTwo.fill(Qt.transparent)
         avatarImageTwoCropped = avatarImageTwo.scaled(30, 40, Qt.IgnoreAspectRatio, Qt.FastTransformation)
         self.avatarTwoLbl.setPixmap(QPixmap(avatarImageTwoCropped))
         self.avatarTwoLbl.move(500, 545)
@@ -309,7 +380,7 @@ class BoardTwoPlayers(QFrame):
     def keyPressEvent(self, event):
         key = event.key()
 
-        self.step = 10
+        self.step = 5
 
         if key == Qt.Key_Right:
             if self.startingPositionOne < 755:
@@ -323,13 +394,13 @@ class BoardTwoPlayers(QFrame):
                 self.avatarOneLbl.move(self.startingPositionOne, 545)
         elif key == Qt.Key_D:
             if self.startingPositionTwo < 755:
-                self.setAvatarTwoMove("Assets/Mario/right2.png")
+                self.setAvatarTwoMove("Assets/Mario/right.png")
                 self.startingPositionTwo = self.startingPositionTwo + self.step
                 self.avatarTwoLbl.move(self.startingPositionTwo, 545)
         elif key == Qt.Key_A:
             if self.startingPositionTwo > 81:
                 self.startingPositionTwo = self.startingPositionTwo - self.step
-                self.setAvatarTwoMove("Assets/Mario/left1.png")
+                self.setAvatarTwoMove("Assets/Mario/left.png")
                 self.avatarTwoLbl.move(self.startingPositionTwo, 545)
 
 
