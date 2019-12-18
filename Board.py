@@ -185,6 +185,7 @@ class Board(QFrame):
     def setAvatar(self, naziv):
         self.avatarLable = QLabel(self)
         avatarImage = QPixmap(naziv)
+        self.avatarLable.setStyleSheet('QLabel { background-color: transparent }')
         avatarImageCropped = avatarImage.scaled(30,40, Qt.IgnoreAspectRatio, Qt.FastTransformation)
         self.avatarLable.setPixmap(QPixmap(avatarImageCropped))
         self.avatarLable.move(100, 545)
@@ -355,6 +356,7 @@ class BoardTwoPlayers(QFrame):
     def setAvatars(self, avatarOne, avatarTwo):
         self.avatarOneLbl = QLabel(self)
         avatarImageOne = QPixmap(avatarOne)
+        self.avatarOneLbl.setStyleSheet('QLabel { background-color: transparent }')
         #avatarImageOne.fill(Qt.transparent)
         avatarImageOneCropped = avatarImageOne.scaled(30, 40, Qt.IgnoreAspectRatio, Qt.FastTransformation)
         self.avatarOneLbl.setPixmap(QPixmap(avatarImageOneCropped))
@@ -362,6 +364,7 @@ class BoardTwoPlayers(QFrame):
 
         self.avatarTwoLbl = QLabel(self)
         avatarImageTwo = QPixmap(avatarTwo)
+        self.avatarTwoLbl.setStyleSheet('QLabel { background-color: transparent }')
         #avatarImageTwo.fill(Qt.transparent)
         avatarImageTwoCropped = avatarImageTwo.scaled(30, 40, Qt.IgnoreAspectRatio, Qt.FastTransformation)
         self.avatarTwoLbl.setPixmap(QPixmap(avatarImageTwoCropped))
