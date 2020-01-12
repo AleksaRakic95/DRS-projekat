@@ -2,6 +2,7 @@ from PyQt5.QtWidgets import QMainWindow, QFrame, QDesktopWidget, QApplication, Q
 from PyQt5.QtGui import QColor, QPixmap, QMovie, QPainter, QFont
 from PyQt5.QtCore import Qt, QByteArray
 import sys, time
+from key_notifyer import KeyNotifyer
 
 
 class Board(QFrame):
@@ -21,7 +22,18 @@ class Board(QFrame):
         self.nameTwo = playerTwoName
         super().__init__()
 
+        self.moveRightFlags = 0
+        self.moveLeftFlags = 0
+        self.moveUpFlags = 0
+        self.moveDownFlags = 0
+        self.cekanje = 0
+        self.cekanje2 = 0
+
         self.initBoard()
+
+        self.key_notifyer = KeyNotifyer()
+        self.key_notifyer.key_signal.connect(self.__update_position__)
+        self.key_notifyer.start()
 
     def initBoard(self):
         self.resize(800,600)
@@ -65,7 +77,7 @@ class Board(QFrame):
         self.playerName()
         self.setLadder()
         self.setBarrel()
-        self.setAvatar("Assets/Mario/right.png")
+        self.setAvatar("Assets/Mario/marioR.png")
 
         self.show()
 
@@ -190,6 +202,180 @@ class Board(QFrame):
         self.avatarLable.setPixmap(QPixmap(avatarImageCropped))
         self.avatarLable.move(100, 545)
 
+    def keyPressEvent(self, event):
+        self.key_notifyer.add_key(event.key())
+
+    def keyReleaseEvent(self, event):
+        self.key_notifyer.remove_key(event.key())
+
+    def __update_position__(self, key):
+        rect  = self.avatarLable.geometry()
+
+        if key == Qt.Key_Right:
+            if rect.x() < 755:
+                self.moveRight()
+        elif key == Qt.Key_Left:
+            if rect.x() > 81:
+                self.moveLeft()
+        elif key == Qt.Key_Down:
+            self.moveDown()
+        elif key == Qt.Key_Up:
+            self.moveUp()
+        #elif key == Qt.Key_Space:
+            #self.jump()
+
+    def closeEvent(self, event):
+        self.key_notifyer.die()
+
+    def jump(self):
+        ''' Jump koji ne radi... '''
+        player = self.avatarLable.geometry()
+        floor = self.avatarLable.geometry().y()
+        value = 2
+        k = 0
+        for i in range(10):
+            if i < 5:
+                self.avatarLable.move(player.x(), player.y() - value)
+                time.sleep(0.000001)
+            else:
+                self.avatarLable.move(player.x(), player.y() + value)
+                time.sleep(0.001)
+
+
+    def moveLeft(self):
+        player = self.avatarLable.geometry()
+
+        if self.moveLeftFlags == 0:
+            avatarImage = QPixmap("Assets/Mario/marioL1.png")
+        elif self.moveLeftFlags == 1:
+            avatarImage = QPixmap("Assets/Mario/marioL2.png")
+
+        avatarImageCropped = avatarImage.scaled(30, 40, Qt.IgnoreAspectRatio, Qt.FastTransformation)
+        self.avatarLable.setPixmap(QPixmap(avatarImageCropped))
+        #self.avatarLable.setStyleSheet('QLabel { background-color: transparent }')
+        self.avatarLable.move(player.x() - 8, player.y())
+
+        if self.moveLeftFlags == 0:
+            self.moveLeftFlags = 1
+        else:
+            self.moveLeftFlags = 0
+
+    def moveRight(self):
+        player = self.avatarLable.geometry()
+
+        if self.moveRightFlags == 0:
+            avatarImage = QPixmap("Assets/Mario/marioR1.png")
+        elif self.moveRightFlags == 1:
+            avatarImage = QPixmap("Assets/Mario/marioR2.png")
+
+        avatarImageCropped = avatarImage.scaled(30, 40, Qt.IgnoreAspectRatio, Qt.FastTransformation)
+        self.avatarLable.setPixmap(QPixmap(avatarImageCropped))
+        #self.avatarLable.setStyleSheet('QLabel { background-color: transparent }')
+        self.avatarLable.move(player.x() + 8, player.y())
+
+        if self.moveRightFlags == 0:
+            self.moveRightFlags = 1
+        else:
+            self.moveRightFlags = 0
+
+    def moveUp(self):
+        nivo = self.avatarLable.geometry().y()
+        x = self.avatarLable.geometry().x()
+        self.cekanje = self.cekanje + 1
+
+        if self.cekanje % 2 == 0:
+            if self.moveUpFlags == 0:
+                avatarImage = QPixmap("Assets/Mario/marioUp1.png")
+            elif self.moveUpFlags == 1:
+                avatarImage = QPixmap("Assets/Mario/marioUp11.png")
+
+            if self.moveUpFlags == 0:
+                self.moveUpFlags = 1
+            else:
+                self.moveUpFlags = 0
+
+            avatarImageCropped = avatarImage.scaled(30, 40, Qt.IgnoreAspectRatio, Qt.FastTransformation)
+            self.avatarLable.setPixmap(QPixmap(avatarImageCropped))
+
+        ''' Move Up on ladder '''
+        if nivo <= 545 and nivo >= 457:
+            if x == 684:
+                self.avatarLable.move(self.avatarLable.geometry().x(), nivo - 3)
+        elif nivo <= 455 and nivo >= 367:
+            if x == 84 or x == 396:
+                self.avatarLable.move(self.avatarLable.geometry().x(), nivo - 3)
+        elif nivo <= 365 and nivo >= 277:
+            if x == 196 or x == 612:
+                self.avatarLable.move(self.avatarLable.geometry().x(), nivo - 3)
+        elif nivo <= 275 and nivo >= 187:
+            if x == 700:
+                self.avatarLable.move(self.avatarLable.geometry().x(), nivo - 3)
+        elif nivo <= 185 and nivo >= 97:
+            if x == 380:
+                self.avatarLable.move(self.avatarLable.geometry().x(), nivo - 3)
+
+        ''' Move up on broken Ladder '''
+
+        if nivo <= 545 and nivo >= 523:
+            if x == 332:
+                self.avatarLable.move(self.avatarLable.geometry().x(), nivo - 3)
+        elif nivo <= 365 and nivo >= 343:
+            if x == 468:
+                self.avatarLable.move(self.avatarLable.geometry().x(), nivo - 3)
+        elif nivo <= 275 and nivo >= 251:
+            if x == 324:
+                self.avatarLable.move(self.avatarLable.geometry().x(), nivo - 3)
+
+    def moveDown(self):
+        nivo = self.avatarLable.geometry().y()
+        x = self.avatarLable.geometry().x()
+        self.cekanje2 = self.cekanje2 + 1
+
+        if self.cekanje2 % 2 == 0:
+            if self.moveDownFlags == 0:
+                avatarImage = QPixmap("Assets/Mario/marioUp1.png")
+            elif self.moveDownFlags == 1:
+                avatarImage = QPixmap("Assets/Mario/marioUp11.png")
+
+            if self.moveDownFlags == 0:
+                self.moveDownFlags = 1
+            else:
+                self.moveDownFlags = 0
+
+            avatarImageCropped = avatarImage.scaled(30, 40, Qt.IgnoreAspectRatio, Qt.FastTransformation)
+            self.avatarLable.setPixmap(QPixmap(avatarImageCropped))
+
+        ''' Move down on Ladder '''
+
+        if nivo <= 543 and nivo >= 455:
+            if x == 684:
+                self.avatarLable.move(self.avatarLable.geometry().x(), nivo + 3)
+        elif nivo <= 453 and nivo >= 365:
+            if x == 84 or x == 396:
+                self.avatarLable.move(self.avatarLable.geometry().x(), nivo + 3)
+        elif nivo <= 363 and nivo >= 275:
+            if x == 196 or x == 612:
+                self.avatarLable.move(self.avatarLable.geometry().x(), nivo + 3)
+        elif nivo <= 273 and nivo >= 185:
+            if x == 700:
+                self.avatarLable.move(self.avatarLable.geometry().x(), nivo + 3)
+        elif nivo <= 183 and nivo >= 95:
+            if x == 380:
+                self.avatarLable.move(self.avatarLable.geometry().x(), nivo + 3)
+
+        ''' Move down on broken Ladder '''
+
+        if nivo <= 543 and nivo >= 521:
+            if x == 332:
+                self.avatarLable.move(self.avatarLable.geometry().x(), nivo + 3)
+        elif nivo <= 363 and nivo >= 341:
+            if x == 468:
+                self.avatarLable.move(self.avatarLable.geometry().x(), nivo + 3)
+        elif nivo <= 273 and nivo >= 249:
+            if x == 324:
+                self.avatarLable.move(self.avatarLable.geometry().x(), nivo + 3)
+
+    '''
     def setAvatarMove(self, naziv):
         avatarImage = QPixmap(naziv)
         avatarImageCropped = avatarImage.scaled(30,40, Qt.IgnoreAspectRatio, Qt.FastTransformation)
@@ -212,7 +398,8 @@ class Board(QFrame):
                 #self.avatarLable.move(self.PocetnaDimenzija, 545)
                 self.setAvatarMove("Assets/Mario/left.png")
                 self.avatarLable.move(self.PocetnaDimenzija, 545)
-        '''elif key == Qt.Key_Space:
+    
+        elif key == Qt.Key_Space:
             self.jump()'''
 
     '''def jump(self):
@@ -255,6 +442,10 @@ class BoardTwoPlayers(QFrame):
 
         self.initBoardTwoPlayers()
 
+        self.key_notifyer = KeyNotifyer()
+        self.key_notifyer.key_signal.connect(self.__update_position__)
+        self.key_notifyer.start()
+
     def initBoardTwoPlayers(self):
         self.resize(800, 600)
         self.center()
@@ -289,7 +480,7 @@ class BoardTwoPlayers(QFrame):
 
         self.playerNames()
         self.setBarrel()
-        self.setAvatars("Assets/Mario/right.png", "Assets/Mario/left.png")
+        self.setAvatars("Assets/Mario/marioR.png", "Assets/Mario/marioL.png")
 
         self.show()
 
@@ -381,6 +572,39 @@ class BoardTwoPlayers(QFrame):
         self.avatarTwoLbl.setPixmap(QPixmap(avatarImageCropped))
 
     def keyPressEvent(self, event):
+        self.key_notifyer.add_key(event.key())
+
+    def keyReleaseEvent(self, event):
+        self.key_notifyer.remove_key(event.key())
+
+    def __update_position__(self, key):
+        player1 = self.avatarOneLbl.geometry()
+        player2 = self.avatarTwoLbl.geometry()
+
+        ''' Moving first player '''
+
+        if key == Qt.Key_Right:
+            if player1.x() < 755:
+                self.avatarOneLbl.setGeometry(player1.x() + 5, player1.y(), player1.width(), player1.height())
+        elif key == Qt.Key_Left:
+            if player1.x() > 81:
+                self.avatarOneLbl.setGeometry(player1.x() - 5, player1.y(), player1.width(), player1.height())
+
+        ''' Moving second player '''
+
+        if key == Qt.Key_D:
+            if player2.x() < 755:
+                self.avatarTwoLbl.setGeometry(player2.x() + 5, player2.y(), player2.width(), player2.height())
+        elif key == Qt.Key_A:
+            if player2.x() > 81:
+                self.avatarTwoLbl.setGeometry(player2.x() - 5, player2.y(), player2.width(), player2.height())
+
+    def closeEvent(self, event):
+        self.key_notifyer.die()
+
+
+    '''
+    def keyPressEvent(self, event):
         key = event.key()
 
         self.step = 5
@@ -405,7 +629,7 @@ class BoardTwoPlayers(QFrame):
                 self.startingPositionTwo = self.startingPositionTwo - self.step
                 self.setAvatarTwoMove("Assets/Mario/left.png")
                 self.avatarTwoLbl.move(self.startingPositionTwo, 545)
-
+        '''
 
     def center(self):
         qr = self.frameGeometry()
