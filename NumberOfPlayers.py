@@ -34,7 +34,7 @@ class NumberOfPlayers(QWidget):
         onePlayerBtn = QPushButton('One Player', self)
         onePlayerBtn.clicked.connect(self.onePlayer)
         onePlayerBtn.resize(200, 50)
-        onePlayerBtn.move(310, 400)
+        onePlayerBtn.move(300, 400)
         onePlayerBtn.setStyleSheet("QPushButton:!hover { background-color: black; color: white;  }"
                                    "QPushButton:hover {background-color: black; color: red; }")
         onePlayerBtn.setFont(fontBtn)
@@ -42,7 +42,7 @@ class NumberOfPlayers(QWidget):
         twoPlayersBtn = QPushButton('Two Players', self)
         twoPlayersBtn.clicked.connect(self.twoPlayers)
         twoPlayersBtn.resize(200, 50)
-        twoPlayersBtn.move(320, 500)
+        twoPlayersBtn.move(300, 500)
         twoPlayersBtn.setStyleSheet("QPushButton:!hover { background-color: black; color: white; }"
                                     "QPushButton:hover { background-color: black; color: red; }")
         twoPlayersBtn.setFont(fontBtn)

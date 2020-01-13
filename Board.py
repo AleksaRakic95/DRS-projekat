@@ -6,7 +6,7 @@ from key_notifyer import KeyNotifyer
 
 
 class Board(QFrame):
-    BoardWidth = 200
+    BoardWidth = 200                    
     BoardHeight = 200
     PocetnaDimenzija = 100
 
@@ -49,8 +49,8 @@ class Board(QFrame):
 
         self.setStyleSheet("QFrame { background-color: %s}" % QColor(0, 0, 0).name())
 
-        sirina = 800 / 54
-        visina = 600 / 40
+        sirina = 800 / 54                      # sirina kockice za ivicu
+        visina = 600 / 40                      #visina kocikice za ivicu
 
         brickImage = QPixmap('Assets/Brick/Brick.png')
         brickImageCropped = brickImage.scaled(sirina, visina, Qt.IgnoreAspectRatio, Qt.FastTransformation)
@@ -71,7 +71,7 @@ class Board(QFrame):
         self.PlatformList = []
 
         for i in range(1, 6):
-            for j in range(36):
+            for j in range(38):
                 self.PlatformList.append(self.setPlatform(platformImageCropped, i, j, sirina))
 
         '''self.ladderlabel = QLabel(self)
@@ -83,7 +83,7 @@ class Board(QFrame):
         self.setPrincess()
         self.playerName()
         self.setLadder()
-        self.setBarrel()
+        #self.setBarrel()
         self.setAvatars("Assets/Mario/marioR.png", "Assets/Mario/mario2L.png")
 
         self.show()
@@ -108,22 +108,13 @@ class Board(QFrame):
         label = QLabel(self)
         label.setPixmap(QPixmap(platformImageCropped))
 
-        if i % 2 == 1:
-            if i == 5:
-                if j > 12 and j < 20:
-                    label.move(sirina + j * 20, 600 - i * 90 - 15)
-                #else:
-                    #label.
-            else:
-               label.move(sirina + j * 20, 600 - i * 90 - 15)
+        if i < 5:
+            label.move(sirina + j * 20, 600 - i * 90 - 15)
         else:
-            if i == 4:
-                if j > 28:
-                    label.move(50 + sirina + j * 20, 600 - i * 90 - 15)
-                else:
-                    label.move(sirina + j * 20, 600 - i * 90 - 15)
+            if j > 12 and j < 20:
+                label.move(sirina + j * 20, 600 - i * 90 - 15)
             else:
-                label.move(50 + sirina + j * 20, 600 - i * 90 - 15)
+                label.move(800, 600)
 
         return label
 
@@ -147,23 +138,30 @@ class Board(QFrame):
         brokenLadderImageCropped = brokenLadderImage.scaled(30, 70, Qt.IgnoreAspectRatio, Qt.FastTransformation)
 
         # Merdevine na prvoj platformi
-        self.ladderPosition(ladderImageCropped, 685, 515)
-        self.brokenLadderPosition(brokenLadderImageCropped, 330, 515)
+        self.brokenLadderPosition(brokenLadderImageCropped, 75, 515)
+        self.ladderPosition(ladderImageCropped, 350, 515)
+        self.ladderPosition(ladderImageCropped, 420, 515)
+        self.brokenLadderPosition(brokenLadderImageCropped, 695, 515)
 
         # Merdevine na drugoj platformi
-        self.ladderPosition(ladderImageCropped, 85, 425)
-        self.ladderPosition(ladderImageCropped, 400, 425)
+        self.ladderPosition(ladderImageCropped, 45, 425)
+        self.brokenLadderPosition(brokenLadderImageCropped, 320, 425)
+        self.brokenLadderPosition(brokenLadderImageCropped, 452, 425)
+        self.ladderPosition(ladderImageCropped, 725, 425)
 
         # Merdevine na trecoj platformi
-        self.brokenLadderPosition(brokenLadderImageCropped, 470, 335)
-        self.ladderPosition(ladderImageCropped, 200, 335)
-        self.ladderPosition(ladderImageCropped, 615, 335)
+        self.brokenLadderPosition(brokenLadderImageCropped, 75, 335)
+        self.ladderPosition(ladderImageCropped, 350, 335)
+        self.ladderPosition(ladderImageCropped, 420, 335)
+        self.brokenLadderPosition(brokenLadderImageCropped, 695, 335)
 
         # Merdevine na cetvrtoj platformi
-        self.brokenLadderPosition(brokenLadderImageCropped, 330, 245)
-        self.ladderPosition(ladderImageCropped, 704, 245)
+        self.ladderPosition(ladderImageCropped, 45, 245)
+        self.brokenLadderPosition(brokenLadderImageCropped, 320, 245)
+        self.brokenLadderPosition(brokenLadderImageCropped, 452, 245)
+        self.ladderPosition(ladderImageCropped, 725, 245)
 
-        # Merdevine na cetvrtoj platformi
+        # Merdevine na petoj platformi
         self.ladderPosition(ladderImageCropped, 382, 155)
         self.ladderPosition(ladderImageCropped, 241, 155)
         self.ladderPosition(ladderImage2Cropped, 241, 85)
@@ -182,7 +180,7 @@ class Board(QFrame):
         self.brokenLadderlabel.setPixmap(QPixmap(brokenLadderImageCropped))
         self.brokenLadderlabel.move(x, y)  # x=350, y=515
 
-    def setBarrel(self):
+    '''def setBarrel(self):
         self.barrelLable = QLabel(self)
         barrelImage = QPixmap('Assets/Brick/Barel.png')
         barrelImageCropped = barrelImage.scaled(50, 35, Qt.IgnoreAspectRatio, Qt.FastTransformation)
@@ -201,7 +199,7 @@ class Board(QFrame):
         barrel4Image = QPixmap('Assets/Barrel/Burrel4.png')
         barrel4ImageCropped = barrel4Image.scaled(50, 70, Qt.IgnoreAspectRatio, Qt.FastTransformation)
         self.FourBurrellabel.setPixmap(QPixmap(barrel4ImageCropped))
-        self.FourBurrellabel.move(25, 155)
+        self.FourBurrellabel.move(25, 155)'''
 
     def setAvatars(self, naziv, naziv2):
         ''' Avatar 1 '''
