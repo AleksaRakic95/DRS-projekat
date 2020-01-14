@@ -1,8 +1,12 @@
 from PyQt5.QtWidgets import QMainWindow, QFrame, QDesktopWidget, QApplication, QLabel, QWidget
 from PyQt5.QtGui import QColor, QPixmap, QMovie, QPainter, QFont
 from PyQt5.QtCore import Qt, QByteArray
-import sys, time
+import sys, time, random
+
 from key_notifyer import KeyNotifyer
+from MonkeyMovement import MonkeyMovement
+from BarrelMovement import BarrelMovement
+
 
 
 class Board(QFrame):
@@ -36,11 +40,22 @@ class Board(QFrame):
         self.cekanjePlayer2_2 = 0
         self.movePlayerFlags = 0
 
+        self.hitWall = False
+        self.barrels = []
+
         self.initBoard()
 
         self.key_notifyer = KeyNotifyer()
         self.key_notifyer.key_signal.connect(self.__update_position__)
         self.key_notifyer.start()
+
+        self.monkey_movement = MonkeyMovement()
+        self.monkey_movement.move_monkey_signal.connect(self.moveMonkey)
+        self.monkey_movement.start()
+
+        self.barrel_movement = BarrelMovement()
+        self.barrel_movement.move_barrel_signal.connect(self.moveBarrel)
+        self.barrel_movement.start()
 
     def initBoard(self):
         self.resize(800,600)
@@ -85,6 +100,7 @@ class Board(QFrame):
         self.setLadder()
         #self.setBarrel()
         self.setAvatars("Assets/Mario/marioR.png", "Assets/Mario/mario2L.png")
+        self.setMonkey()
 
         self.show()
 
@@ -219,6 +235,55 @@ class Board(QFrame):
         avatarImageCropped2 = avatarImage2.scaled(30, 40, Qt.IgnoreAspectRatio, Qt.FastTransformation)
         self.avatarLable2.setPixmap(QPixmap(avatarImageCropped2))
         self.avatarLable2.move(720, 545)
+
+    def setMonkey(self):
+        self.monkeyLabel = QLabel(self)
+        monkeyImage = QPixmap("Assets/Monkey/monkey.png")
+        monkeyCroppedImage = monkeyImage.scaled(60, 70, Qt.IgnoreAspectRatio, Qt.FastTransformation)
+        self.monkeyLabel.setStyleSheet('QLabel { background-color: transparent }')
+        self.monkeyLabel.setPixmap(QPixmap(monkeyCroppedImage))
+        self.monkeyLabel.move(375, 155)
+
+    def moveMonkey(self):
+        rect = self.monkeyLabel.geometry()
+
+        if rect.x() == 20:
+            self.hitWall = True
+        elif rect.x() == 720:
+            self.hitWall = False
+
+        rand = random.randint(0, 800)
+
+        if rand % 50 == 0:
+            barrel = QLabel(self)
+            barrelImage = QPixmap("Assets/Barrel/burrelBrown.png")
+            barrelCroppedImage = barrelImage.scaled(28, 18, Qt.IgnoreAspectRatio, Qt.FastTransformation)
+            barrel.setStyleSheet('QLabel { background-color: transparent }')
+            barrel.setPixmap(QPixmap(barrelCroppedImage))
+            barrel.move(rect.x(), rect.y() + 20)
+            self.barrels.append(barrel)
+            self.barrels[len(self.barrels) - 1].show()
+
+        if self.hitWall:
+            self.monkeyLabel.move(rect.x() + 5, rect.y())
+        else:
+            self.monkeyLabel.move(rect.x() - 5, rect.y())
+
+
+    def moveBarrel(self):
+
+        for barrel in self.barrels:
+            rect = barrel.geometry()
+            barrel.move(rect.x(), rect.y() + 4)
+
+    def setAttackBarrel(self):
+        self.attackBurrel = QLabel(self)
+        attackBurrelImage = QPixmap("Assets/Barrel/burrelBrown.png")
+        attackBurrelCroppedImage = attackBurrelImage.scaled(28, 18, Qt.IgnoreAspectRatio, Qt.FastTransformation)
+        self.attackBurrel.setStyleSheet('QLabel { background-color: transparent }')
+        self.attackBurrel.setPixmap(QPixmap(attackBurrelCroppedImage))
+        self.attackBurrel.move(385, 245)
+
 
     def keyPressEvent(self, event):
         self.key_notifyer.add_key(event.key())
