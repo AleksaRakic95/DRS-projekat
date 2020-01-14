@@ -209,7 +209,7 @@ class Board(QFrame):
         self.avatarLable.setStyleSheet('QLabel { background-color: transparent }')
         avatarImageCropped = avatarImage.scaled(30, 40, Qt.IgnoreAspectRatio, Qt.FastTransformation)
         self.avatarLable.setPixmap(QPixmap(avatarImageCropped))
-        self.avatarLable.move(100, 545)
+        self.avatarLable.move(40, 545)
 
         ''' Avatar 2 '''
 
@@ -218,7 +218,7 @@ class Board(QFrame):
         self.avatarLable2.setStyleSheet('QLabel { background-color: transparent }')
         avatarImageCropped2 = avatarImage2.scaled(30, 40, Qt.IgnoreAspectRatio, Qt.FastTransformation)
         self.avatarLable2.setPixmap(QPixmap(avatarImageCropped2))
-        self.avatarLable2.move(500, 545)
+        self.avatarLable2.move(720, 545)
 
     def keyPressEvent(self, event):
         self.key_notifyer.add_key(event.key())
@@ -227,37 +227,81 @@ class Board(QFrame):
         self.key_notifyer.remove_key(event.key())
 
     def __update_position__(self, key):
-        rect  = self.avatarLable.geometry()
+        rect = self.avatarLable.geometry()
         rect2 = self.avatarLable2.geometry()
 
         if key == Qt.Key_Right:
             if rect.x() < 755:
-                self.movePlayerFlags = 1
-                self.moveRight()
+                if rect.y() == 545 or rect.y() == 455 or rect.y() == 365 or rect.y() == 275 or rect.y() == 185:
+                    self.movePlayerFlags = 1
+                    self.moveRight()
         elif key == Qt.Key_Left:
             if rect.x() > 20:
-                self.movePlayerFlags = 1
-                self.moveLeft()
+                if rect.y() == 545 or rect.y() == 455 or rect.y() == 365 or rect.y() == 275 or rect.y() == 185:
+                    self.movePlayerFlags = 1
+                    self.moveLeft()
         elif key == Qt.Key_Up:
-            self.movePlayerFlags = 1
-            self.moveUp()
+            if rect.y() <= 545 and rect.y() > 455 or rect.y() <= 365 and rect.y() > 275:
+                if rect.x() == 72 or rect.x() == 352 or rect.x() == 424 or rect.x() == 696:
+                    self.movePlayerFlags = 1
+                    self.moveUp()
+            elif rect.y() <= 455 and rect.y() > 365 or rect.y() <= 275 and rect.y() > 185:
+                if rect.x() == 48 or rect.x() == 320 or rect.x() == 456 or rect.x() == 728:
+                    self.movePlayerFlags = 1
+                    self.moveUp()
+            elif rect.y() <= 185 and rect.y() > 95:
+                if rect.x() == 384:
+                    self.movePlayerFlags = 1
+                    self.moveUp()
         elif key == Qt.Key_Down:
-            self.movePlayerFlags = 1
-            self.moveDown()
+            if rect.y() < 545 and rect.y() >= 455 or rect.y() < 365 and rect.y() >= 275:
+                if rect.x() == 72 or rect.x() == 352 or rect.x() == 424 or rect.x() == 696:
+                    self.movePlayerFlags = 1
+                    self.moveDown()
+            elif rect.y() < 455 and rect.y() >= 365 or rect.y() < 275 and rect.y() >= 185:
+                if rect.x() == 48 or rect.x() == 320 or rect.x() == 456 or rect.x() == 728:
+                    self.movePlayerFlags = 1
+                    self.moveDown()
+            elif rect.y() < 185 and rect.y() >= 95:
+                if rect.x() == 384:
+                    self.movePlayerFlags = 1
+                    self.moveDown()
         elif key == Qt.Key_A:
             if rect2.x() > 20:
-                self.movePlayerFlags = 2
-                self.moveLeft()
+                if rect2.y() == 545 or rect2.y() == 455 or rect2.y() == 365 or rect2.y() == 275 or rect2.y() == 185:
+                    self.movePlayerFlags = 2
+                    self.moveLeft()
         elif key == Qt.Key_D:
             if rect2.x() < 755:
-                self.movePlayerFlags = 2
-                self.moveRight()
+                if rect2.y() == 545 or rect2.y() == 455 or rect2.y() == 365 or rect2.y() == 275 or rect2.y() == 185:
+                    self.movePlayerFlags = 2
+                    self.moveRight()
         elif key == Qt.Key_W:
-            self.movePlayerFlags = 2
-            self.moveUp()
+            if rect2.y() <= 545 and rect2.y() > 455 or rect2.y() <= 365 and rect2.y() > 275:
+                if rect2.x() == 72 or rect2.x() == 352 or rect2.x() == 424 or rect2.x() == 696:
+                    self.movePlayerFlags = 2
+                    self.moveUp()
+            elif rect2.y() <= 455 and rect2.y() > 365 or rect2.y() <= 275 and rect2.y() > 185:
+                if rect2.x() == 48 or rect2.x() == 320 or rect2.x() == 456 or rect2.x() == 728:
+                    self.movePlayerFlags = 2
+                    self.moveUp()
+            elif rect2.y() <= 185 and rect2.y() > 95:
+                if rect2.x() == 384:
+                    self.movePlayerFlags = 2
+                    self.moveUp()
         elif key == Qt.Key_S:
-            self.movePlayerFlags = 2
-            self.moveDown()
+            if rect2.y() < 545 and rect2.y() >= 455 or rect2.y() < 365 and rect2.y() >= 275:
+                if rect2.x() == 72 or rect2.x() == 352 or rect2.x() == 424 or rect2.x() == 696:
+                    self.movePlayerFlags = 2
+                    self.moveDown()
+            elif rect2.y() < 455 and rect2.y() >= 365 or rect2.y() < 275 and rect2.y() >= 185:
+                if rect2.x() == 48 or rect2.x() == 320 or rect2.x() == 456 or rect2.x() == 728:
+                    self.movePlayerFlags = 2
+                    self.moveDown()
+            elif rect2.y() < 185 and rect2.y() >= 95:
+                if rect2.x() == 384:
+                    self.movePlayerFlags = 2
+                    self.moveDown()
 
     def closeEvent(self, event):
         self.key_notifyer.die()
@@ -441,31 +485,34 @@ class Board(QFrame):
             dodatak = 2
 
         if nivo <= 543 + dodatak and nivo >= 455 + dodatak:
-            if x == 684:
+            if x == 352 or x == 424:
                 return True
         elif nivo <= 453 + dodatak and nivo >= 365 + dodatak:
-            if x == 84 or x == 396:
+            if x == 48 or x == 728:
                 return True
         elif nivo <= 363 + dodatak and nivo >= 275 + dodatak:
-            if x == 196 or x == 612:
+            if x == 352 or x == 424:
                 return True
         elif nivo <= 273 + dodatak and nivo >= 185 + dodatak:
-            if x == 700:
+            if x == 48 or x == 728:
                 return True
         elif nivo <= 183 + dodatak and nivo >= 95 + dodatak:
-            if x == 380:
+            if x == 384:
                 return True
 
         ''' Move down on broken Ladder '''
 
         if nivo <= 543 + dodatak and nivo >= 521 + dodatak:
-            if x == 332:
+            if x == 72 or x == 696:
+                return True
+        elif nivo <= 453 + dodatak and nivo >= 431 + dodatak:
+            if x == 320 or x == 456:
                 return True
         elif nivo <= 363 + dodatak and nivo >= 341 + dodatak:
-            if x == 468:
+            if x == 72 or x == 696:
                 return True
         elif nivo <= 273 + dodatak and nivo >= 249 + dodatak:
-            if x == 324:
+            if x == 320 or x == 456:
                 return True
 
         return False
@@ -500,7 +547,7 @@ class Board(QFrame):
         self.isJump = 1
         self.update()'''
 
-    def update(self):
+    '''def update(self):
         if self.isJump:
             if self.v > 0:
                 F = (0.5 * self.m * (self.v * self.v))
@@ -515,7 +562,7 @@ class Board(QFrame):
                 self.y = 545
                 self.avatarLable.move(self.PocetnaDimenzija, self.y)
                 self.isJump = 0
-                self.v = 3
+                self.v = 3'''
 
     def center(self):
         qr = self.frameGeometry()
