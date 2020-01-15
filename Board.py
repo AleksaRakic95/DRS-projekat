@@ -44,6 +44,9 @@ class Board(QFrame):
         self.hitWall = False
         self.barrels = []
 
+        self.Lives1 = 3
+        self.Lives2 = 3
+
         self.point1 = 0
         self.point2 = 0
         self.first = [True, False, False, False, False, False]
@@ -126,7 +129,7 @@ class Board(QFrame):
             self.nameTwo = 'Player 2'
 
         self.levelLabel = QLabel(self)
-        self.levelLabel.setText('Level ')
+        self.levelLabel.setText('Level 1')
         self.levelLabel.setFont(fontLbl)
         self.levelLabel.setStyleSheet("QLabel {color: white}")
         self.levelLabel.move(20, 20)
@@ -141,10 +144,11 @@ class Board(QFrame):
         self.player1score.setText('Score: ')
         self.player1score.setFont(fontLbl)
         self.player1score.setStyleSheet("QLabel {color: white}")
-        self.player1score.move(400, 40)
+        #self.player1score.move(400, 40)
+        self.player1score.setGeometry(400, 35, 100, 20)
 
         self.player1lives = QLabel(self)
-        self.player1lives.setText('Lives: ')
+        self.player1lives.setText('Lives: ' + str(self.Lives1))
         self.player1lives.setFont(fontLbl)
         self.player1lives.setStyleSheet("QLabel {color: white}")
         self.player1lives.move(400, 60)
@@ -159,10 +163,11 @@ class Board(QFrame):
         self.player2score.setText('Score: ')
         self.player2score.setFont(fontLbl)
         self.player2score.setStyleSheet("QLabel {color: white}")
-        self.player2score.move(640, 40)
+        self.player2score.setGeometry(640, 35, 100, 20)
+        #self.player2score.move(640, 40)
 
         self.player2lives = QLabel(self)
-        self.player2lives.setText('Lives: ')
+        self.player2lives.setText('Lives: ' + str(self.Lives1))
         self.player2lives.setFont(fontLbl)
         self.player2lives.setStyleSheet("QLabel {color: white}")
         self.player2lives.move(640, 60)
@@ -309,6 +314,54 @@ class Board(QFrame):
         for barrel in self.barrels:
             rect = barrel.geometry()
             barrel.move(rect.x(), rect.y() + 4)
+
+            if self.isHit(barrel, self.avatarLable):
+                print('Sudaaar')
+                self.Lives1 = self.Lives1 - 1
+                self.player1lives.setText('Lives: ' + str(self.Lives1))
+                #barrel.move(0,0)
+                barrel.hide()
+                self.barrels.remove(barrel)
+            elif self.isHit(barrel, self.avatarLable2):
+                print('Sudaaar')
+                self.Lives2 = self.Lives2 - 1
+                self.player2lives.setText('Lives: ' + str(self.Lives2))
+                #barrel.move(0,0)
+                barrel.hide()
+                self.barrels.remove(barrel)
+
+
+    def isHit(self, first, second):
+        rec1 = first.geometry()
+        y1 = first.height()
+        x1 = first.width()
+        rec2 = second.geometry()
+        x2 = second.width()
+        y2 = second.height()
+        if rec1.x() + x1 in range(rec2.x(), rec2.x() + x2):
+            if rec1.y() in range(rec2.y(), rec2.y() + y2):
+                return True
+            elif rec1.y() + y1 in range(rec2.y(), rec2.y() + y2):
+                return True
+
+        if rec1.x() in range(rec2.x(), rec2.x() + x2):
+            if rec1.y() in range(rec2.y(), rec2.y() + y2):
+                return True
+            elif rec1.y() + y1 in range(rec2.y(), rec2.y() + y2):
+                return True
+
+        if rec2.x() + x2 in range(rec1.x(), rec1.x() + x1):
+            if rec2.y() in range(rec1.y(), rec1.y() + y1):
+                return True
+            elif rec2.y() + y2 in range(rec1.y(), rec1.y() + y1):
+                return True
+
+        if rec2.x() in range(rec1.x(), rec1.x() + x1):
+            if rec2.y() in range(rec1.y(), rec1.y() + y1):
+                return True
+            elif rec2.y() + y2 in range(rec1.y(), rec1.y() + y1):
+                return True
+
 
     def setAttackBarrel(self):
         self.attackBurrel = QLabel(self)
@@ -610,7 +663,7 @@ class Board(QFrame):
         elif nivo <= 363 + dodatak and nivo >= 341 + dodatak:
             if x == 72 or x == 696:
                 return True
-        elif nivo <= 273 + dodatak and nivo >= 249 + dodatak:
+        elif nivo <= 273 + dodatak and nivo >= 251 + dodatak:
             if x == 320 or x == 456:
                 return True
 
@@ -704,9 +757,6 @@ class Board(QFrame):
 
         self.player1score.setText('Score: ' + str(self.point1))
         self.player2score.setText('Score: ' + str(self.point2))
-
-        print("point1: " + str(self.point1))
-        print("point2: " + str(self.point2))
 
     def center(self):
         qr = self.frameGeometry()

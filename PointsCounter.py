@@ -23,4 +23,4 @@ class PointsCounter(QObject):
     def __work__(self):
         while True:
             self.point_counter_signal.emit()
-            time.sleep(2)
+            time.sleep(0.2)
