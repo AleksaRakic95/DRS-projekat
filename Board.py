@@ -1,6 +1,6 @@
 from PyQt5.QtWidgets import QMainWindow, QFrame, QDesktopWidget, QApplication, QLabel, QWidget
-from PyQt5.QtGui import QColor, QPixmap, QMovie, QPainter, QFont
-from PyQt5.QtCore import Qt, QByteArray
+from PyQt5.QtGui import QColor, QPixmap, QMovie, QPainter, QFont, QTextBlock
+from PyQt5.QtCore import Qt, QByteArray, pyqtSignal
 import sys, time, random
 
 from key_notifyer import KeyNotifyer
@@ -111,6 +111,7 @@ class Board(QFrame):
         self.setAvatars("Assets/Mario/marioR.png", "Assets/Mario/mario2L.png")
         self.setMonkey()
 
+
         self.show()
 
     def playerName(self):
@@ -118,17 +119,55 @@ class Board(QFrame):
         fontLbl.setFamily("Arcade Normal")
         fontLbl.setPointSize(8)
 
+        if self.nameOne == "":
+            self.nameOne = 'Player 1'
+
+        if self.nameTwo == "":
+            self.nameTwo = 'Player 2'
+
+        self.levelLabel = QLabel(self)
+        self.levelLabel.setText('Level ')
+        self.levelLabel.setFont(fontLbl)
+        self.levelLabel.setStyleSheet("QLabel {color: white}")
+        self.levelLabel.move(20, 20)
+
         self.playerOne = QLabel(self)
         self.playerOne.setText(self.nameOne)
         self.playerOne.setFont(fontLbl)
         self.playerOne.setStyleSheet("QLabel {color: white}")
-        self.playerOne.move(20,20)
+        self.playerOne.move(400,20)
+
+        self.player1score = QLabel(self)
+        self.player1score.setText('Score: ')
+        self.player1score.setFont(fontLbl)
+        self.player1score.setStyleSheet("QLabel {color: white}")
+        self.player1score.move(400, 40)
+
+        self.player1lives = QLabel(self)
+        self.player1lives.setText('Lives: ')
+        self.player1lives.setFont(fontLbl)
+        self.player1lives.setStyleSheet("QLabel {color: white}")
+        self.player1lives.move(400, 60)
 
         self.playerTwo = QLabel(self)
         self.playerTwo.setText(self.nameTwo)
         self.playerTwo.setFont(fontLbl)
         self.playerTwo.setStyleSheet("QLabel {color: white}")
-        self.playerTwo.move(720, 20)
+        self.playerTwo.move(640, 20)
+
+        self.player2score = QLabel(self)
+        self.player2score.setText('Score: ')
+        self.player2score.setFont(fontLbl)
+        self.player2score.setStyleSheet("QLabel {color: white}")
+        self.player2score.move(640, 40)
+
+        self.player2lives = QLabel(self)
+        self.player2lives.setText('Lives: ')
+        self.player2lives.setFont(fontLbl)
+        self.player2lives.setStyleSheet("QLabel {color: white}")
+        self.player2lives.move(640, 60)
+
+
 
     def setBorder(self, pixmapCropped, i, j, sirina, visina):
         label = QLabel(self)
@@ -662,6 +701,9 @@ class Board(QFrame):
             self.second[5] = False
         else:
             self.point2 = self.point2
+
+        self.player1score.setText('Score: ' + str(self.point1))
+        self.player2score.setText('Score: ' + str(self.point2))
 
         print("point1: " + str(self.point1))
         print("point2: " + str(self.point2))
