@@ -6,9 +6,10 @@ import time
 class BarrelMovement(QObject):
     move_barrel_signal = pyqtSignal()
 
-    def __init__(self):
+    def __init__(self, level):
         super().__init__()
 
+        self.level = level
 
         self.thread = QThread()
         self.moveToThread(self.thread)
@@ -24,4 +25,4 @@ class BarrelMovement(QObject):
     def __work__(self):
         while True:
             self.move_barrel_signal.emit()
-            time.sleep(0.05)
+            time.sleep(0.07 - self.level * 0.0005)

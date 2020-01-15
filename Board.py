@@ -24,10 +24,14 @@ class Board(QFrame):
     v = 3
     m = 2
 
-    def __init__(self, playerOneName=None, playerTwoName=None):
+    def __init__(self, playerOneName=None, playerTwoName=None, level=None):
         self.nameOne = playerOneName
         self.nameTwo = playerTwoName
+        self.level = level
+
         super().__init__()
+
+        self.PlatformChanged = 0
 
         self.moveRightFlags = 0
         self.moveLeftFlags = 0
@@ -54,17 +58,20 @@ class Board(QFrame):
         self.first = [True, False, False, False, False, False]
         self.second = [True, False, False, False, False, False]
 
+        self.pamtiPrvog = 0
+        self.pamtiDrugog = 0
+
         self.initBoard()
 
         self.key_notifyer = KeyNotifyer()
         self.key_notifyer.key_signal.connect(self.__update_position__)
         self.key_notifyer.start()
 
-        self.monkey_movement = MonkeyMovement()
+        self.monkey_movement = MonkeyMovement(self.level)
         self.monkey_movement.move_monkey_signal.connect(self.moveMonkey)
         self.monkey_movement.start()
 
-        self.barrel_movement = BarrelMovement()
+        self.barrel_movement = BarrelMovement(self.level)
         self.barrel_movement.move_barrel_signal.connect(self.moveBarrel)
         self.barrel_movement.start()
 
@@ -141,7 +148,7 @@ class Board(QFrame):
             self.nameTwo = 'Player 2'
 
         self.levelLabel = QLabel(self)
-        self.levelLabel.setText('Level 1')
+        self.levelLabel.setText('Level ' + str(self.level))
         self.levelLabel.setFont(fontLbl)
         self.levelLabel.setStyleSheet("QLabel {color: white}")
         self.levelLabel.move(20, 20)
@@ -704,23 +711,26 @@ class Board(QFrame):
             self.first[5] = False
 
         if self.first[0] == True:
-            self.point1 = 0
+            self.point1 = 0 + self.pamtiPrvog
             self.first[0] = False
         elif self.first[1] == True:
-            self.point1 = 1
+            self.point1 = 1 + self.pamtiPrvog
             self.first[1] = False
         elif self.first[2] == True:
-            self.point1 = 2
+            self.point1 = 2 + self.pamtiPrvog
             self.first[2] = False
         elif self.first[3] == True:
-            self.point1 = 3
+            self.point1 = 3 + self.pamtiPrvog
             self.first[3] = False
         elif self.first[4] == True:
-            self.point1 = 4
+            self.point1 = 4 + self.pamtiPrvog
             self.first[4] = False
         elif self.first[5] == True:
-            self.point1 = 5
+            self.point1 = 5 + self.pamtiPrvog
             self.first[5] = False
+            self.pamtiPrvog = self.point1
+            self.pamtiDrugog = self.point2
+            self.newLevel()
         else:
             self.point1 = self.point1
 
@@ -745,23 +755,26 @@ class Board(QFrame):
             self.second[5] = False
 
         if self.second[0] == True:
-            self.point2 = 0
+            self.point2 = 0 + self.pamtiDrugog
             self.second[0] = False
         elif self.second[1] == True:
-            self.point2 = 1
+            self.point2 = 1 + self.pamtiDrugog
             self.second[1] = False
         elif self.second[2] == True:
-            self.point2 = 2
+            self.point2 = 2 + self.pamtiDrugog
             self.second[2] = False
         elif self.second[3] == True:
-            self.point2 = 3
+            self.point2 = 3 + self.pamtiDrugog
             self.second[3] = False
         elif self.second[4] == True:
-            self.point2 = 4
+            self.point2 = 4 + self.pamtiDrugog
             self.second[4] = False
         elif self.second[5] == True:
-            self.point2 = 5
+            self.point2 = 5 + self.pamtiDrugog
             self.second[5] = False
+            self.pamtiDrugog = self.point2
+            self.pamtiPrvog = self.point1
+            self.newLevel()
         else:
             self.point2 = self.point2
 
@@ -824,6 +837,51 @@ class Board(QFrame):
         cp = QDesktopWidget().availableGeometry().center()
         qr.moveCenter(cp)
         self.move(qr.topLeft())
+
+    def newLevel(self):
+        self.level = self.level + 1
+        self.levelLabel.setText('Level ' + str(self.level))
+
+        self.avatarLable.move(40, 545)
+        self.avatarLable2.move(720, 545)
+
+        self.monkey_movement.die()
+        self.barrel_movement.die()
+
+        for b in self.barrels:
+            b.hide()
+            #self.barrels.remove(b)
+
+        self.barrels.clear()
+
+        image1 = QPixmap('Assets/Brick/Platform.png')
+        image2 = QPixmap('Assets/Brick/BluePlatform.png')
+        image3 = QPixmap('Assets/Brick/RedPlatform.png')
+
+        sirina = 800 / 54
+
+        croppedImage = image1.scaled(20, 20, Qt.IgnoreAspectRatio, Qt.FastTransformation)
+
+        if self.level % 3 == 0:
+            croppedImage = image1.scaled(20, 20, Qt.IgnoreAspectRatio, Qt.FastTransformation)
+        elif self.level % 3 == 1:
+            croppedImage = image2.scaled(20, 20, Qt.IgnoreAspectRatio, Qt.FastTransformation)
+        else:
+            croppedImage = image3.scaled(20, 20, Qt.IgnoreAspectRatio, Qt.FastTransformation)
+
+        self.PlatformList.clear()
+
+        for i in range(1, 6):
+            for j in range(38):
+                self.PlatformList.append(self.setPlatform(croppedImage, i, j, sirina))
+
+            self.PlatformList.append(self.setPlatform(croppedImage, i, 38, sirina))
+
+        self.monkey_movement.move_monkey_signal.connect(self.moveMonkey)
+        self.monkey_movement.start()
+
+        self.barrel_movement.move_barrel_signal.connect(self.moveBarrel)
+        self.barrel_movement.start()
 
 
 class BoardTwoPlayers(QFrame):
