@@ -10,7 +10,7 @@ from BarrelMovement import BarrelMovement
 
 
 class Board(QFrame):
-    BoardWidth = 200                    
+    BoardWidth = 200
     BoardHeight = 200
     PocetnaDimenzija = 100
 
@@ -83,11 +83,24 @@ class Board(QFrame):
         platformImage = QPixmap('Assets/Brick/Platforma.png')
         platformImageCropped = platformImage.scaled(20, 20, Qt.IgnoreAspectRatio, Qt.FastTransformation)
 
+        platformRestImage = QPixmap('Assets/Brick/Platforma2.png')
+        platformRestCroppedImage = platformRestImage.scaled(10, 20, Qt.IgnoreAspectRatio, Qt.FastTransformation)
+
         self.PlatformList = []
 
         for i in range(1, 6):
             for j in range(38):
                 self.PlatformList.append(self.setPlatform(platformImageCropped, i, j, sirina))
+
+            self.PlatformList.append(self.setPlatform(platformRestCroppedImage, i, 38, sirina))
+            '''
+            platformRest = QLabel(self)
+            platformRestImage = QPixmap('Assets/Brick/Platforma2.png')
+            platformRestCroppedImage = platformRestImage.scaled(10, 20, Qt.IgnoreAspectRatio, Qt.FastTransformation)
+            platformRest.setPixmap(QPixmap(platformRestCroppedImage))
+            platformRest.move(sirina+ 38*20, 600 - i * 90 - 15)
+            self.PlatformList.append(platformRest)
+            '''
 
         '''self.ladderlabel = QLabel(self)
         ladderImage = QPixmap('Assets/Ladder/ladder.png')
