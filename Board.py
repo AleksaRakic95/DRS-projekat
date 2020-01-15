@@ -7,6 +7,8 @@ from key_notifyer import KeyNotifyer
 from MonkeyMovement import MonkeyMovement
 from BarrelMovement import BarrelMovement
 from PointsCounter import PointsCounter
+from UnexpectedForceLife import UnexpectedForceLife
+from UnexpectedForceBomb import UnexpectedForceBomb
 
 
 
@@ -69,6 +71,16 @@ class Board(QFrame):
         self.points_counter = PointsCounter()
         self.points_counter.point_counter_signal.connect(self.refreshPoints)
         self.points_counter.start()
+
+        self.unexpected_force_life = UnexpectedForceLife(self)
+        self.unexpected_force_life.show_life_signal.connect(self.showLifeForce)
+        self.unexpected_force_life.hide_life_signal.connect(self.hideLifeForce)
+        self.unexpected_force_life.start()
+
+        self.unexpected_force_bomb = UnexpectedForceBomb(self)
+        self.unexpected_force_bomb.show_bomb_signal.connect(self.showBombForce)
+        self.unexpected_force_bomb.hide_bomb_signal.connect(self.hideBombForce)
+        self.unexpected_force_bomb.start()
 
     def initBoard(self):
         self.resize(800,600)
@@ -171,8 +183,6 @@ class Board(QFrame):
         self.player2lives.setFont(fontLbl)
         self.player2lives.setStyleSheet("QLabel {color: white}")
         self.player2lives.move(640, 60)
-
-
 
     def setBorder(self, pixmapCropped, i, j, sirina, visina):
         label = QLabel(self)
@@ -757,6 +767,57 @@ class Board(QFrame):
 
         self.player1score.setText('Score: ' + str(self.point1))
         self.player2score.setText('Score: ' + str(self.point2))
+
+    def showLifeForce(self):
+        self.forceLife = QLabel(self)
+        forceLifeImage = QPixmap('Assets/Heart/Life.png')
+        self.forceLife.setStyleSheet('QLabel { background-color: transparent }')
+        forceLifeImageCropped = forceLifeImage.scaled(20, 20, Qt.IgnoreAspectRatio, Qt.FastTransformation)
+        self.forceLife.setPixmap(QPixmap(forceLifeImageCropped))
+
+        randX = random.randrange(15, 765)
+        randY = random.randrange(0, 4)
+
+        nivoi = [565, 475, 385, 295, 205]
+        positionY = nivoi[randY]
+        self.forceLife.move(randX, positionY)
+        self.forceLife.show()
+
+    def hideLifeForce(self):
+        if self.isHit(self.forceLife, self.avatarLable):
+            self.Lives1 = self.Lives1 + 1
+            self.player1lives.setText('Lives: ' + str(self.Lives1))
+            print(str(self.Lives1))
+        elif self.isHit(self.forceLife, self.avatarLable2):
+            self.Lives2 = self.Lives2 + 1
+            self.player2lives.setText('Lives: ' + str(self.Lives2))
+
+        self.forceLife.clear()
+
+    def showBombForce(self):
+        self.forceBomb = QLabel(self)
+        forceBombImage = QPixmap('Assets/Heart/FlameBomb.png')
+        self.forceBomb.setStyleSheet('QLabel { background-color: transparent }')
+        forceBombImageCropped = forceBombImage.scaled(20, 20, Qt.IgnoreAspectRatio, Qt.FastTransformation)
+        self.forceBomb.setPixmap(QPixmap(forceBombImageCropped))
+
+        randX = random.randrange(15, 765)
+        randY = random.randrange(0, 4)
+
+        nivoi = [565, 475, 385, 295, 205]
+        positionY = nivoi[randY]
+        self.forceBomb.move(randX, positionY)
+        self.forceBomb.show()
+
+    def hideBombForce(self):
+        if self.isHit(self.forceBomb, self.avatarLable):
+            self.Lives1 = self.Lives1 - 1
+            self.player1lives.setText('Lives: ' + str(self.Lives1))
+            print(str(self.Lives1))
+        elif self.isHit(self.forceBomb, self.avatarLable2):
+            self.Lives2 = self.Lives2 - 1
+            self.player2lives.setText('Lives: ' + str(self.Lives2))
+        self.forceBomb.clear()
 
     def center(self):
         qr = self.frameGeometry()
