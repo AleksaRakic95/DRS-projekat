@@ -33,9 +33,15 @@ class OnePlayer(QWidget):
 
         self.textEdit = QLineEdit(self)
         self.textEdit.resize(200,50)
-        self.textEdit.move(250, 400)
+        self.textEdit.move(250, 350)
         self.textEdit.setStyleSheet("QLineEdit { background-color: black; color: white; }")
         self.textEdit.setFont(fontTB)
+
+        self.textEdit2 = QLineEdit(self)
+        self.textEdit2.resize(200, 50)
+        self.textEdit2.move(250, 450)
+        self.textEdit2.setStyleSheet("QLineEdit { background-color: black; color: white; }")
+        self.textEdit2.setFont(fontTB)
 
         fontBtn = QFont()
         fontBtn.setFamily("Arcade Normal")
@@ -71,6 +77,7 @@ class OnePlayer(QWidget):
         self.move(qr.topLeft())
 
     def startGame(self):
-        playername = self.textEdit.text()
-        self.frame = Board(playername)
+        playernameOne = self.textEdit.text()
+        playernameTwo = self.textEdit2.text()
+        self.frame = Board(playernameOne, playernameTwo)
         self.close()

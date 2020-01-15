@@ -31,7 +31,7 @@ class NumberOfPlayers(QWidget):
         fontBtn.setFamily("Arcade Normal")
         fontBtn.setPointSize(13)
 
-        onePlayerBtn = QPushButton('One Player', self)
+        onePlayerBtn = QPushButton('Two Players', self)
         onePlayerBtn.clicked.connect(self.onePlayer)
         onePlayerBtn.resize(200, 50)
         onePlayerBtn.move(300, 400)
@@ -39,7 +39,7 @@ class NumberOfPlayers(QWidget):
                                    "QPushButton:hover {background-color: black; color: red; }")
         onePlayerBtn.setFont(fontBtn)
 
-        twoPlayersBtn = QPushButton('Two Players', self)
+        twoPlayersBtn = QPushButton('Tournament', self)
         twoPlayersBtn.clicked.connect(self.twoPlayers)
         twoPlayersBtn.resize(200, 50)
         twoPlayersBtn.move(300, 500)

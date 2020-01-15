@@ -105,14 +105,21 @@ class Board(QFrame):
         self.show()
 
     def playerName(self):
-        self.playerOne = QLabel(self)
         fontLbl = QFont()
         fontLbl.setFamily("Arcade Normal")
         fontLbl.setPointSize(8)
+
+        self.playerOne = QLabel(self)
         self.playerOne.setText(self.nameOne)
         self.playerOne.setFont(fontLbl)
         self.playerOne.setStyleSheet("QLabel {color: white}")
         self.playerOne.move(20,20)
+
+        self.playerTwo = QLabel(self)
+        self.playerTwo.setText(self.nameTwo)
+        self.playerTwo.setFont(fontLbl)
+        self.playerTwo.setStyleSheet("QLabel {color: white}")
+        self.playerTwo.move(720, 20)
 
     def setBorder(self, pixmapCropped, i, j, sirina, visina):
         label = QLabel(self)
