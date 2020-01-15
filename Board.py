@@ -6,6 +6,7 @@ import sys, time, random
 from key_notifyer import KeyNotifyer
 from MonkeyMovement import MonkeyMovement
 from BarrelMovement import BarrelMovement
+from PointsCounter import PointsCounter
 
 
 
@@ -43,6 +44,11 @@ class Board(QFrame):
         self.hitWall = False
         self.barrels = []
 
+        self.point1 = 0
+        self.point2 = 0
+        self.first = [True, False, False, False, False, False]
+        self.second = [True, False, False, False, False, False]
+
         self.initBoard()
 
         self.key_notifyer = KeyNotifyer()
@@ -56,6 +62,10 @@ class Board(QFrame):
         self.barrel_movement = BarrelMovement()
         self.barrel_movement.move_barrel_signal.connect(self.moveBarrel)
         self.barrel_movement.start()
+
+        self.points_counter = PointsCounter()
+        self.points_counter.point_counter_signal.connect(self.refreshPoints)
+        self.points_counter.start()
 
     def initBoard(self):
         self.resize(800,600)
@@ -93,20 +103,6 @@ class Board(QFrame):
                 self.PlatformList.append(self.setPlatform(platformImageCropped, i, j, sirina))
 
             self.PlatformList.append(self.setPlatform(platformRestCroppedImage, i, 38, sirina))
-            '''
-            platformRest = QLabel(self)
-            platformRestImage = QPixmap('Assets/Brick/Platforma2.png')
-            platformRestCroppedImage = platformRestImage.scaled(10, 20, Qt.IgnoreAspectRatio, Qt.FastTransformation)
-            platformRest.setPixmap(QPixmap(platformRestCroppedImage))
-            platformRest.move(sirina+ 38*20, 600 - i * 90 - 15)
-            self.PlatformList.append(platformRest)
-            '''
-
-        '''self.ladderlabel = QLabel(self)
-        ladderImage = QPixmap('Assets/Ladder/ladder.png')
-        ladderImageCropped = ladderImage.scaled(30, 70, Qt.IgnoreAspectRatio, Qt.FastTransformation)
-        self.ladderlabel.setPixmap(QPixmap(ladderImageCropped))
-        self.ladderlabel.move(685,515)'''
 
         self.setPrincess()
         self.playerName()
@@ -215,27 +211,6 @@ class Board(QFrame):
         self.brokenLadderlabel = QLabel(self)
         self.brokenLadderlabel.setPixmap(QPixmap(brokenLadderImageCropped))
         self.brokenLadderlabel.move(x, y)  # x=350, y=515
-
-    '''def setBarrel(self):
-        self.barrelLable = QLabel(self)
-        barrelImage = QPixmap('Assets/Brick/Barel.png')
-        barrelImageCropped = barrelImage.scaled(50, 35, Qt.IgnoreAspectRatio, Qt.FastTransformation)
-        self.barrelLable.setPixmap(QPixmap(barrelImageCropped))
-        self.barrelLable.move(25, 550)
-
-        self.movie = QMovie("Assets/Brick/Flame3.gif", QByteArray(), self)
-        self.flameLabel = QLabel(self)
-        self.flameLabel.move(27, 520)
-        self.movie.setCacheMode(QMovie.CacheAll)
-        self.flameLabel.setMovie(self.movie)
-        self.movie.start()
-        self.movie.loopCount()
-
-        self.FourBurrellabel = QLabel(self)
-        barrel4Image = QPixmap('Assets/Barrel/Burrel4.png')
-        barrel4ImageCropped = barrel4Image.scaled(50, 70, Qt.IgnoreAspectRatio, Qt.FastTransformation)
-        self.FourBurrellabel.setPixmap(QPixmap(barrel4ImageCropped))
-        self.FourBurrellabel.move(25, 155)'''
 
     def setAvatars(self, naziv, naziv2):
         ''' Avatar 1 '''
@@ -601,53 +576,95 @@ class Board(QFrame):
                 return True
 
         return False
-    '''
-    def setAvatarMove(self, naziv):
-        avatarImage = QPixmap(naziv)
-        avatarImageCropped = avatarImage.scaled(30,40, Qt.IgnoreAspectRatio, Qt.FastTransformation)
-        self.avatarLable.setPixmap(QPixmap(avatarImageCropped))
 
-    def keyPressEvent(self, event):
-        #super(Board, self).kretanje(event)
-        key = event.key()
+    def refreshPoints(self):
+        position1 = self.avatarLable.geometry().y()
+        position2 = self.avatarLable2.geometry().y()
 
-        self.brojac = 5
+        if position1 == 545:
+            self.first[0] = True
+        elif position1 == 455:
+            self.first[0] = False
+            self.first[1] = True
+        elif position1 == 365:
+            self.first[1] = False
+            self.first[2] = True
+        elif position1 == 275:
+            self.first[2] = False
+            self.first[3] = True
+        elif position1 == 185:
+            self.first[3] = False
+            self.first[4] = True
+        elif position1 == 95:
+            self.first[4] = False
+            self.first[5] = True
+        else:
+            self.first[5] = False
 
-        if key == Qt.Key_Right:
-            if self.PocetnaDimenzija < 755:
-                self.setAvatarMove("Assets/Mario/right.png")
-                self.PocetnaDimenzija = self.PocetnaDimenzija + self.brojac;
-                self.avatarLable.move(self.PocetnaDimenzija, 545)
-        elif key == Qt.Key_Left:
-            if self.PocetnaDimenzija > 81:
-                self.PocetnaDimenzija = self.PocetnaDimenzija - self.brojac;
-                #self.avatarLable.move(self.PocetnaDimenzija, 545)
-                self.setAvatarMove("Assets/Mario/left.png")
-                self.avatarLable.move(self.PocetnaDimenzija, 545)
-    
-        elif key == Qt.Key_Space:
-            self.jump()'''
+        if self.first[0] == True:
+            self.point1 = 0
+            self.first[0] = False
+        elif self.first[1] == True:
+            self.point1 = 1
+            self.first[1] = False
+        elif self.first[2] == True:
+            self.point1 = 2
+            self.first[2] = False
+        elif self.first[3] == True:
+            self.point1 = 3
+            self.first[3] = False
+        elif self.first[4] == True:
+            self.point1 = 4
+            self.first[4] = False
+        elif self.first[5] == True:
+            self.point1 = 5
+            self.first[5] = False
+        else:
+            self.point1 = self.point1
 
-    '''def jump(self):
-        self.isJump = 1
-        self.update()'''
+        if position2 == 545:
+            self.second[0] = True
+        elif position2 == 455:
+            self.second[0] = False
+            self.second[1] = True
+        elif position2 == 365:
+            self.second[1] = False
+            self.second[2] = True
+        elif position2 == 275:
+            self.second[2] = False
+            self.second[3] = True
+        elif position2 == 185:
+            self.second[3] = False
+            self.second[4] = True
+        elif position2 == 95:
+            self.second[4] = False
+            self.second[5] = True
+        else:
+            self.second[5] = False
 
-    '''def update(self):
-        if self.isJump:
-            if self.v > 0:
-                F = (0.5 * self.m * (self.v * self.v))
-            else:
-                F = -(0.5 * self.m * (self.v * self.v))
-            self.y = self.y - F
-            self.v = self.v - 1
+        if self.second[0] == True:
+            self.point2 = 0
+            self.second[0] = False
+        elif self.second[1] == True:
+            self.point2 = 1
+            self.second[1] = False
+        elif self.second[2] == True:
+            self.point2 = 2
+            self.second[2] = False
+        elif self.second[3] == True:
+            self.point2 = 3
+            self.second[3] = False
+        elif self.second[4] == True:
+            self.point2 = 4
+            self.second[4] = False
+        elif self.second[5] == True:
+            self.point2 = 5
+            self.second[5] = False
+        else:
+            self.point2 = self.point2
 
-            self.avatarLable.move(self.PocetnaDimenzija, self.y)
-
-            if self.y >= 545:
-                self.y = 545
-                self.avatarLable.move(self.PocetnaDimenzija, self.y)
-                self.isJump = 0
-                self.v = 3'''
+        print("point1: " + str(self.point1))
+        print("point2: " + str(self.point2))
 
     def center(self):
         qr = self.frameGeometry()
@@ -829,33 +846,6 @@ class BoardTwoPlayers(QFrame):
         self.key_notifyer.die()
 
 
-    '''
-    def keyPressEvent(self, event):
-        key = event.key()
-
-        self.step = 5
-
-        if key == Qt.Key_Right:
-            if self.startingPositionOne < 755:
-                self.setAvatarOneMove("Assets/Mario/right.png")
-                self.startingPositionOne = self.startingPositionOne + self.step
-                self.avatarOneLbl.move(self.startingPositionOne, 545)
-        elif key == Qt.Key_Left:
-            if self.startingPositionOne > 81:
-                self.startingPositionOne = self.startingPositionOne - self.step
-                self.setAvatarOneMove("Assets/Mario/left.png")
-                self.avatarOneLbl.move(self.startingPositionOne, 545)
-        elif key == Qt.Key_D:
-            if self.startingPositionTwo < 755:
-                self.setAvatarTwoMove("Assets/Mario/right.png")
-                self.startingPositionTwo = self.startingPositionTwo + self.step
-                self.avatarTwoLbl.move(self.startingPositionTwo, 545)
-        elif key == Qt.Key_A:
-            if self.startingPositionTwo > 81:
-                self.startingPositionTwo = self.startingPositionTwo - self.step
-                self.setAvatarTwoMove("Assets/Mario/left.png")
-                self.avatarTwoLbl.move(self.startingPositionTwo, 545)
-        '''
 
     def center(self):
         qr = self.frameGeometry()
