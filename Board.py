@@ -53,6 +53,9 @@ class Board(QFrame):
         self.Lives1 = 3
         self.Lives2 = 3
 
+        self.isLive1 = True
+        self.isLive2 = True
+
         self.point1 = 0
         self.point2 = 0
         self.first = [True, False, False, False, False, False]
@@ -327,6 +330,27 @@ class Board(QFrame):
         else:
             self.monkeyLabel.move(rect.x() - 5, rect.y())
 
+        if self.isHit(self.monkeyLabel, self.avatarLable) and self.isLive1:
+            print('Sudaaar')
+            self.Lives1 = self.Lives1 - 1
+            self.player1lives.setText('Lives: ' + str(self.Lives1))
+            if (self.Lives1 > 0):
+                self.avatarLable.move(40, 545)
+            else:
+                self.isLive1 = False
+                self.avatarLable.clear()
+                self.avatarLable.move(1000, 1000)
+        elif self.isHit(self.monkeyLabel, self.avatarLable2) and self.isLive2:
+            print('Sudaaar')
+            self.Lives2 = self.Lives2 - 1
+            self.player2lives.setText('Lives: ' + str(self.Lives2))
+            if (self.Lives2 > 0):
+                self.avatarLable2.move(720, 545)
+            else:
+                self.isLive2 = False
+                self.avatarLable2.clear()
+                self.avatarLable2.move(1100, 1100)
+
 
     def moveBarrel(self):
 
@@ -334,20 +358,32 @@ class Board(QFrame):
             rect = barrel.geometry()
             barrel.move(rect.x(), rect.y() + 4)
 
-            if self.isHit(barrel, self.avatarLable):
+            if self.isHit(barrel, self.avatarLable) and self.isLive1:
                 print('Sudaaar')
                 self.Lives1 = self.Lives1 - 1
                 self.player1lives.setText('Lives: ' + str(self.Lives1))
                 #barrel.move(0,0)
                 barrel.hide()
                 self.barrels.remove(barrel)
-            elif self.isHit(barrel, self.avatarLable2):
+                if(self.Lives1 > 0):
+                    self.avatarLable.move(40, 545)
+                else:
+                    self.isLive1 = False
+                    self.avatarLable.clear()
+                    self.avatarLable.move(1000, 1000)
+            elif self.isHit(barrel, self.avatarLable2) and self.isLive2:
                 print('Sudaaar')
                 self.Lives2 = self.Lives2 - 1
                 self.player2lives.setText('Lives: ' + str(self.Lives2))
                 #barrel.move(0,0)
                 barrel.hide()
                 self.barrels.remove(barrel)
+                if (self.Lives2 > 0):
+                    self.avatarLable2.move(720, 545)
+                else:
+                    self.isLive2 = False
+                    self.avatarLable2.clear()
+                    self.avatarLable2.move(1100, 1100)
 
 
     def isHit(self, first, second):
@@ -401,17 +437,17 @@ class Board(QFrame):
         rect = self.avatarLable.geometry()
         rect2 = self.avatarLable2.geometry()
 
-        if key == Qt.Key_Right:
+        if key == Qt.Key_Right and self.isLive1:
             if rect.x() < 755:
                 if rect.y() == 545 or rect.y() == 455 or rect.y() == 365 or rect.y() == 275 or rect.y() == 185:
                     self.movePlayerFlags = 1
                     self.moveRight()
-        elif key == Qt.Key_Left:
+        elif key == Qt.Key_Left and self.isLive1:
             if rect.x() > 20:
                 if rect.y() == 545 or rect.y() == 455 or rect.y() == 365 or rect.y() == 275 or rect.y() == 185:
                     self.movePlayerFlags = 1
                     self.moveLeft()
-        elif key == Qt.Key_Up:
+        elif key == Qt.Key_Up and self.isLive1:
             if rect.y() <= 545 and rect.y() > 455 or rect.y() <= 365 and rect.y() > 275:
                 if rect.x() == 72 or rect.x() == 352 or rect.x() == 424 or rect.x() == 696:
                     self.movePlayerFlags = 1
@@ -424,7 +460,7 @@ class Board(QFrame):
                 if rect.x() == 384:
                     self.movePlayerFlags = 1
                     self.moveUp()
-        elif key == Qt.Key_Down:
+        elif key == Qt.Key_Down and self.isLive1:
             if rect.y() < 545 and rect.y() >= 455 or rect.y() < 365 and rect.y() >= 275:
                 if rect.x() == 72 or rect.x() == 352 or rect.x() == 424 or rect.x() == 696:
                     self.movePlayerFlags = 1
@@ -437,17 +473,17 @@ class Board(QFrame):
                 if rect.x() == 384:
                     self.movePlayerFlags = 1
                     self.moveDown()
-        elif key == Qt.Key_A:
+        elif key == Qt.Key_A  and self.isLive2:
             if rect2.x() > 20:
                 if rect2.y() == 545 or rect2.y() == 455 or rect2.y() == 365 or rect2.y() == 275 or rect2.y() == 185:
                     self.movePlayerFlags = 2
                     self.moveLeft()
-        elif key == Qt.Key_D:
+        elif key == Qt.Key_D and self.isLive2:
             if rect2.x() < 755:
                 if rect2.y() == 545 or rect2.y() == 455 or rect2.y() == 365 or rect2.y() == 275 or rect2.y() == 185:
                     self.movePlayerFlags = 2
                     self.moveRight()
-        elif key == Qt.Key_W:
+        elif key == Qt.Key_W and self.isLive2:
             if rect2.y() <= 545 and rect2.y() > 455 or rect2.y() <= 365 and rect2.y() > 275:
                 if rect2.x() == 72 or rect2.x() == 352 or rect2.x() == 424 or rect2.x() == 696:
                     self.movePlayerFlags = 2
@@ -460,7 +496,7 @@ class Board(QFrame):
                 if rect2.x() == 384:
                     self.movePlayerFlags = 2
                     self.moveUp()
-        elif key == Qt.Key_S:
+        elif key == Qt.Key_S and self.isLive2:
             if rect2.y() < 545 and rect2.y() >= 455 or rect2.y() < 365 and rect2.y() >= 275:
                 if rect2.x() == 72 or rect2.x() == 352 or rect2.x() == 424 or rect2.x() == 696:
                     self.movePlayerFlags = 2
@@ -843,6 +879,12 @@ class Board(QFrame):
     def newLevel(self):
         self.level = self.level + 1
         self.levelLabel.setText('Level ' + str(self.level))
+
+        #self.Lives1 = self.Lives1 + 3
+        #self.Lives2 = self.Lives2 + 3
+
+        #self.player1lives.setText('Lives: ' + str(self.Lives1))
+        #self.player2lives.setText('Lives: ' + str(self.Lives2))
 
         self.avatarLable.move(40, 545)
         self.avatarLable2.move(720, 545)
