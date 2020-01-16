@@ -10,6 +10,7 @@ class BarrelMovement(QObject):
         super().__init__()
 
         self.level = level
+        self.is_done = False
 
         self.thread = QThread()
         self.moveToThread(self.thread)
@@ -19,10 +20,11 @@ class BarrelMovement(QObject):
         self.thread.start()
 
     def die(self):
+        self.is_done = True
         self.thread.quit()
 
     @pyqtSlot()
     def __work__(self):
-        while True:
+        while not self.is_done:
             self.move_barrel_signal.emit()
             time.sleep(0.07 - self.level * 0.0005)

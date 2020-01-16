@@ -9,7 +9,7 @@ from BarrelMovement import BarrelMovement
 from PointsCounter import PointsCounter
 from UnexpectedForceLife import UnexpectedForceLife
 from UnexpectedForceBomb import UnexpectedForceBomb
-
+from GameOver import  GameOver
 
 
 class Board(QFrame):
@@ -63,6 +63,8 @@ class Board(QFrame):
 
         self.pamtiPrvog = 0
         self.pamtiDrugog = 0
+
+        self.pobednik = 0
 
         self.initBoard()
 
@@ -350,7 +352,7 @@ class Board(QFrame):
                 self.isLive2 = False
                 self.avatarLable2.clear()
                 self.avatarLable2.move(1100, 1100)
-
+        self.isGameOver()
 
     def moveBarrel(self):
 
@@ -384,7 +386,7 @@ class Board(QFrame):
                     self.isLive2 = False
                     self.avatarLable2.clear()
                     self.avatarLable2.move(1100, 1100)
-
+        self.isGameOver()
 
     def isHit(self, first, second):
         rec1 = first.geometry()
@@ -512,6 +514,11 @@ class Board(QFrame):
 
     def closeEvent(self, event):
         self.key_notifyer.die()
+        self.monkey_movement.die()
+        self.barrel_movement.die()
+        self.points_counter.die()
+        self.unexpected_force_life.quit()
+        self.unexpected_force_bomb.quit()
 
     def moveLeft(self):
         player = self.avatarLable.geometry()
@@ -944,6 +951,27 @@ class Board(QFrame):
 
         self.barrel_movement.move_barrel_signal.connect(self.moveBarrel)
         self.barrel_movement.start()
+
+    def isGameOver(self):
+        if self.Lives1 > 0 and self.Lives2 == 0:
+            self.pobednik = 1
+        elif self.Lives1 == 0 and self.Lives2 > 0:
+            self.pobednik = 2
+        elif self.Lives1 == 0 and self.Lives2 == 0:
+            #gameOver(self.pobdnik)
+            #print("Pobednik: " + str(self.pobednik))
+            winnerName = ""
+            score = 0
+            if self.pobednik == 1:
+                winnerName = self.nameOne
+                score = self.point1
+            elif self.pobednik == 2:
+                winnerName = self.nameTwo
+                score = self.point2
+
+            self.gameOver = GameOver(winnerName, score)
+            self.close()
+
 
 
 class BoardTwoPlayers(QFrame):

@@ -8,6 +8,7 @@ class PointsCounter(QObject):
     def __init__(self):
         super().__init__()
 
+        self.is_done = False
 
         self.thread = QThread()
         self.moveToThread(self.thread)
@@ -17,10 +18,11 @@ class PointsCounter(QObject):
         self.thread.start()
 
     def die(self):
+        self.is_done = True
         self.thread.quit()
 
     @pyqtSlot()
     def __work__(self):
-        while True:
+        while not self.is_done:
             self.point_counter_signal.emit()
             time.sleep(0.2)
