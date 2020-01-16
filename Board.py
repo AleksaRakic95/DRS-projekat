@@ -209,6 +209,8 @@ class Board(QFrame):
             else:
                 label.move(800, 600)
 
+        label.show()
+
         return label
 
     def setPrincess(self):
@@ -854,28 +856,46 @@ class Board(QFrame):
 
         self.barrels.clear()
 
-        image1 = QPixmap('Assets/Brick/Platform.png')
+        image1 = QPixmap('Assets/Brick/Platforma.png')
         image2 = QPixmap('Assets/Brick/BluePlatform.png')
         image3 = QPixmap('Assets/Brick/RedPlatform.png')
 
         sirina = 800 / 54
 
-        croppedImage = image1.scaled(20, 20, Qt.IgnoreAspectRatio, Qt.FastTransformation)
-
-        if self.level % 3 == 0:
-            croppedImage = image1.scaled(20, 20, Qt.IgnoreAspectRatio, Qt.FastTransformation)
-        elif self.level % 3 == 1:
-            croppedImage = image2.scaled(20, 20, Qt.IgnoreAspectRatio, Qt.FastTransformation)
-        else:
-            croppedImage = image3.scaled(20, 20, Qt.IgnoreAspectRatio, Qt.FastTransformation)
+        for p in self.PlatformList:
+            p.hide()
 
         self.PlatformList.clear()
 
-        for i in range(1, 6):
-            for j in range(38):
-                self.PlatformList.append(self.setPlatform(croppedImage, i, j, sirina))
+        if self.level % 3 == 1:
+            croppedImage = image1.scaled(20, 20, Qt.IgnoreAspectRatio, Qt.FastTransformation)
 
-            self.PlatformList.append(self.setPlatform(croppedImage, i, 38, sirina))
+            for i in range(1, 6):
+                for j in range(38):
+                    self.PlatformList.append(self.setPlatform(croppedImage, i, j, sirina))
+
+                self.PlatformList.append(self.setPlatform(croppedImage, i, 38, sirina))
+
+        elif self.level % 3 == 2:
+            croppedImage = image2.scaled(20, 20, Qt.IgnoreAspectRatio, Qt.FastTransformation)
+
+            for i in range(1, 6):
+                for j in range(38):
+                    self.PlatformList.append(self.setPlatform(croppedImage, i, j, sirina))
+
+                self.PlatformList.append(self.setPlatform(croppedImage, i, 38, sirina))
+
+        else:
+            croppedImage = image3.scaled(20, 20, Qt.IgnoreAspectRatio, Qt.FastTransformation)
+
+            for i in range(1, 6):
+                for j in range(38):
+                    self.PlatformList.append(self.setPlatform(croppedImage, i, j, sirina))
+
+                self.PlatformList.append(self.setPlatform(croppedImage, i, 38, sirina))
+
+        self.avatarLable.show()
+        self.avatarLable2.show()
 
         self.monkey_movement.move_monkey_signal.connect(self.moveMonkey)
         self.monkey_movement.start()
