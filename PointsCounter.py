@@ -15,6 +15,7 @@ class PointsCounter(QObject):
         self.thread.started.connect(self.__work__)
 
     def start(self):
+        self.is_done = False
         self.thread.start()
 
     def die(self):

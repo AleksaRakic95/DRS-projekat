@@ -2,7 +2,6 @@ from PyQt5.QtWidgets import QMainWindow, QFrame, QDesktopWidget, QApplication, Q
 from PyQt5.QtGui import QColor, QIcon, QPixmap, QImage, QFont
 from PyQt5.Qt import Qt
 from PyQt5.QtCore import QSize
-from Board import  Board
 from NumberOfPlayers import NumberOfPlayers
 import sys
 from Controls import Controls, ControlsJump

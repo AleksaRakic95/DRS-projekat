@@ -9,7 +9,9 @@ from BarrelMovement import BarrelMovement
 from PointsCounter import PointsCounter
 from UnexpectedForceLife import UnexpectedForceLife
 from UnexpectedForceBomb import UnexpectedForceBomb
-from GameOver import  GameOver
+from UnexpectedForce import UnexpectedForce
+from DelayedEffectOfForce import DelayedEffectOfForce
+from GameOver import GameOver
 
 
 class Board(QFrame):
@@ -47,6 +49,14 @@ class Board(QFrame):
         self.cekanjePlayer2_2 = 0
         self.movePlayerFlags = 0
 
+        self.avatar1hitHeart = False
+        self.avatar2hitHeart = False
+        self.avatar1hitBomb = False
+        self.avatar2hitBomb = False
+
+        self.bombExist = False
+        self.LifeExist = False
+
         self.hitWall = False
         self.barrels = []
 
@@ -74,11 +84,11 @@ class Board(QFrame):
 
         self.monkey_movement = MonkeyMovement(self.level)
         self.monkey_movement.move_monkey_signal.connect(self.moveMonkey)
-        self.monkey_movement.start()
+        self.monkey_movement.start(1)
 
         self.barrel_movement = BarrelMovement(self.level)
         self.barrel_movement.move_barrel_signal.connect(self.moveBarrel)
-        self.barrel_movement.start()
+        self.barrel_movement.start(1)
 
         self.points_counter = PointsCounter()
         self.points_counter.point_counter_signal.connect(self.refreshPoints)
@@ -93,6 +103,15 @@ class Board(QFrame):
         self.unexpected_force_bomb.show_bomb_signal.connect(self.showBombForce)
         self.unexpected_force_bomb.hide_bomb_signal.connect(self.hideBombForce)
         self.unexpected_force_bomb.start()
+
+        self.unexpected_force = UnexpectedForce()
+        self.unexpected_force.mario1_signal.connect(self.executeForce)
+        self.unexpected_force.mario2_signal.connect(self.executeForce2)
+        self.unexpected_force.start()
+
+        self.delayed_effect_of_force = DelayedEffectOfForce()
+        self.delayed_effect_of_force.delayed_effect_of_force_signal.connect(self.checkCollisionWithUnexpectedForce)
+        self.delayed_effect_of_force.start()
 
     def initBoard(self):
         self.resize(800,600)
@@ -161,39 +180,39 @@ class Board(QFrame):
         self.playerOne = QLabel(self)
         self.playerOne.setText(self.nameOne)
         self.playerOne.setFont(fontLbl)
-        self.playerOne.setStyleSheet("QLabel {color: white}")
+        self.playerOne.setStyleSheet("QLabel {color: red}")
         self.playerOne.move(400,20)
 
         self.player1score = QLabel(self)
         self.player1score.setText('Score: ')
         self.player1score.setFont(fontLbl)
-        self.player1score.setStyleSheet("QLabel {color: white}")
+        self.player1score.setStyleSheet("QLabel {color: red}")
         #self.player1score.move(400, 40)
         self.player1score.setGeometry(400, 35, 100, 20)
 
         self.player1lives = QLabel(self)
         self.player1lives.setText('Lives: ' + str(self.Lives1))
         self.player1lives.setFont(fontLbl)
-        self.player1lives.setStyleSheet("QLabel {color: white}")
+        self.player1lives.setStyleSheet("QLabel {color: red}")
         self.player1lives.move(400, 60)
 
         self.playerTwo = QLabel(self)
         self.playerTwo.setText(self.nameTwo)
         self.playerTwo.setFont(fontLbl)
-        self.playerTwo.setStyleSheet("QLabel {color: white}")
+        self.playerTwo.setStyleSheet("QLabel {color: green}")
         self.playerTwo.move(640, 20)
 
         self.player2score = QLabel(self)
         self.player2score.setText('Score: ')
         self.player2score.setFont(fontLbl)
-        self.player2score.setStyleSheet("QLabel {color: white}")
+        self.player2score.setStyleSheet("QLabel {color: green}")
         self.player2score.setGeometry(640, 35, 100, 20)
         #self.player2score.move(640, 40)
 
         self.player2lives = QLabel(self)
         self.player2lives.setText('Lives: ' + str(self.Lives1))
         self.player2lives.setFont(fontLbl)
-        self.player2lives.setStyleSheet("QLabel {color: white}")
+        self.player2lives.setStyleSheet("QLabel {color: green}")
         self.player2lives.move(640, 60)
 
     def setBorder(self, pixmapCropped, i, j, sirina, visina):
@@ -841,16 +860,11 @@ class Board(QFrame):
         self.forceLife.move(randX, positionY)
         self.forceLife.show()
 
-    def hideLifeForce(self):
-        if self.isHit(self.forceLife, self.avatarLable):
-            self.Lives1 = self.Lives1 + 1
-            self.player1lives.setText('Lives: ' + str(self.Lives1))
-            print(str(self.Lives1))
-        elif self.isHit(self.forceLife, self.avatarLable2):
-            self.Lives2 = self.Lives2 + 1
-            self.player2lives.setText('Lives: ' + str(self.Lives2))
+        self.LifeExist = True
 
+    def hideLifeForce(self):
         self.forceLife.clear()
+        self.LifeExist = False
 
     def showBombForce(self):
         self.forceBomb = QLabel(self)
@@ -867,15 +881,11 @@ class Board(QFrame):
         self.forceBomb.move(randX, positionY)
         self.forceBomb.show()
 
+        self.bombExist = True
+
     def hideBombForce(self):
-        if self.isHit(self.forceBomb, self.avatarLable):
-            self.Lives1 = self.Lives1 - 1
-            self.player1lives.setText('Lives: ' + str(self.Lives1))
-            print(str(self.Lives1))
-        elif self.isHit(self.forceBomb, self.avatarLable2):
-            self.Lives2 = self.Lives2 - 1
-            self.player2lives.setText('Lives: ' + str(self.Lives2))
         self.forceBomb.clear()
+        self.bombExist = False
 
     def center(self):
         qr = self.frameGeometry()
@@ -946,11 +956,11 @@ class Board(QFrame):
         self.avatarLable.show()
         self.avatarLable2.show()
 
-        self.monkey_movement.move_monkey_signal.connect(self.moveMonkey)
-        self.monkey_movement.start()
+        #self.monkey_movement.move_monkey_signal.connect(self.moveMonkey)
+        self.monkey_movement.start(self.level)
 
-        self.barrel_movement.move_barrel_signal.connect(self.moveBarrel)
-        self.barrel_movement.start()
+        #self.barrel_movement.move_barrel_signal.connect(self.moveBarrel)
+        self.barrel_movement.start(self.level)
 
     def isGameOver(self):
         if self.Lives1 > 0 and self.Lives2 == 0:
@@ -972,7 +982,67 @@ class Board(QFrame):
             self.gameOver = GameOver(winnerName, score)
             self.close()
 
+    def checkCollisionWithUnexpectedForce(self):
+        if self.LifeExist:
+            if self.isHit(self.forceLife, self.avatarLable):
+                self.unexpected_force.forces[0] = True
+                self.forceLife.clear()
+                self.delayed_effect_of_force.start()
+                self.LifeExist = False
 
+        if self.bombExist:
+            if self.isHit(self.forceBomb, self.avatarLable):
+                self.unexpected_force.forces[1] = True
+                self.forceBomb.clear()
+                self.bombExist = False
+
+        if self.LifeExist:
+            if self.isHit(self.forceLife, self.avatarLable2):
+                self.unexpected_force.forces[2] = True
+                self.forceLife.clear()
+                self.LifeExist = False
+
+        if self.bombExist:
+            if self.isHit(self.forceBomb, self.avatarLable2):
+                self.unexpected_force.forces[3] = True
+                self.forceBomb.clear()
+                self.bombExist = False
+
+    def executeForce(self, force):
+        if force == 1:
+            self.Lives1 = self.Lives1 + 1
+            self.player1lives.setText('Lives: ' + str(self.Lives1))
+            print(str(self.Lives1))
+        elif force == 2:
+            self.Lives1 = self.Lives1 - 1
+            self.player1lives.setText('Lives: ' + str(self.Lives1))
+            print(str(self.Lives1))
+
+            if self.Lives1 > 0:
+                self.avatarLable.move(40, 545)
+            else:
+                self.isLive1 = False
+                self.avatarLable.clear()
+                self.avatarLable.move(1100, 1100)
+
+            self.isGameOver()
+
+    def executeForce2(self, force):
+        if force == 1:
+            self.Lives2 = self.Lives2 + 1
+            self.player2lives.setText('Lives: ' + str(self.Lives2))
+        elif force == 2:
+            self.Lives2 = self.Lives2 - 1
+            self.player2lives.setText('Lives: ' + str(self.Lives2))
+
+            if self.Lives2 > 0:
+                self.avatarLable2.move(720, 545)
+            else:
+                self.isLive2 = False
+                self.avatarLable2.clear()
+                self.avatarLable2.move(1100, 1100)
+
+            self.isGameOver()
 
 class BoardTwoPlayers(QFrame):
     startingPositionOne = 100
