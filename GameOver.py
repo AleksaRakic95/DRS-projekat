@@ -1,7 +1,6 @@
 from PyQt5.QtGui import QFont, QColor
 from PyQt5.QtWidgets import QLabel, QFrame, QDesktopWidget, QPushButton
 
-
 class GameOver(QFrame):
     def __init__(self, winnerName, score):
         super().__init__()
@@ -47,10 +46,6 @@ class GameOver(QFrame):
                                    "QPushButton:hover {background-color: black; color: red; }")
         self.ExitBtn.setFont(fontBtn)
         self.ExitBtn.show()
-
-    #def backToMenu(self):
-        #self.start = StartWindow()
-        #self.close()
 
     def closeApp(self):
         self.close()

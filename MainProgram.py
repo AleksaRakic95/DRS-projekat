@@ -6,7 +6,6 @@
 from PyQt5.QtWidgets import QApplication
 import sys
 
-from Board import Board
 from StartWindow import StartWindow
 
 
