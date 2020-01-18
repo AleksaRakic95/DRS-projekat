@@ -2,7 +2,7 @@ from PyQt5.QtWidgets import QMainWindow, QFrame, QDesktopWidget, QApplication, Q
 from PyQt5.QtGui import QColor, QPixmap, QFont
 from PyQt5.Qt import Qt
 import sys
-from Board import BoardTwoPlayers
+from Tournament import Tournament
 
 
 class TwoPlayers(QWidget):
@@ -18,50 +18,84 @@ class TwoPlayers(QWidget):
         self.center()
         self.setFixedSize(800, 600)
 
-        self.textLabel = QLabel(self)
-        self.textLabel.move(140, 270)
-        fontLabel = QFont()
-        fontLabel.setFamily("Arcade Normal")
-        fontLabel.setPointSize(20)
-        self.textLabel.setStyleSheet('color: white;')
-        self.textLabel.setFont(fontLabel)
-        self.textLabel.setText("Enter player names")
-
-        self.playerOneLabel = QLabel(self)
-        self.playerOneLabel.move(150, 370)
-        fontPlayerLabel = QFont()
-        fontPlayerLabel.setFamily("Arcade Normal")
-        fontPlayerLabel.setPointSize(13)
-        self.playerOneLabel.setStyleSheet('color: white;')
-        self.playerOneLabel.setFont(fontPlayerLabel)
-        self.playerOneLabel.setText("Player one ")
+        self.playersName = []
+        self.exist = False
 
         fontTB = QFont()
         fontTB.setFamily("Arcade Normal")
         fontTB.setPointSize(13)
 
-        self.playerOne = QLineEdit(self)
-        self.playerOne.resize(200, 50)
-        self.playerOne.move(350, 350)
-        self.playerOne.setStyleSheet("QLineEdit { background-color: black; color: white; }")
-        self.playerOne.setFont(fontTB)
+        fontPlayerLabel = QFont()
+        fontPlayerLabel.setFamily("Arcade Normal")
+        fontPlayerLabel.setPointSize(8)
 
         fontBtn = QFont()
         fontBtn.setFamily("Arcade Normal")
         fontBtn.setPointSize(13)
 
+        ####################################################################
+        self.textLabel = QLabel(self)
+        self.textLabel.move(140, 270)
+        fontLabel = QFont()
+        fontLabel.setFamily("Arcade Normal")
+        fontLabel.setPointSize(10)
+        self.textLabel.setStyleSheet('color: white;')
+        self.textLabel.setFont(fontLabel)
+        self.textLabel.setText("Tournament for 4 players. \nEnter player names:")
+
+        '''Player 1'''
+        self.playerOneLabel = QLabel(self)
+        self.playerOneLabel.move(20, 370)
+        self.playerOneLabel.setStyleSheet('color: white;')
+        self.playerOneLabel.setFont(fontPlayerLabel)
+        self.playerOneLabel.setText("Player 1:")
+
+        self.playerOne = QLineEdit(self)
+        self.playerOne.resize(200, 50)
+        self.playerOne.move(120, 350)
+        self.playerOne.setStyleSheet("QLineEdit { background-color: black; color: white; }")
+        self.playerOne.setFont(fontTB)
+
+        '''Player 2'''
         self.playerTwoLabel = QLabel(self)
-        self.playerTwoLabel.move(150, 470)
+        self.playerTwoLabel.move(20, 470)
         self.playerTwoLabel.setStyleSheet('color: white;')
         self.playerTwoLabel.setFont(fontPlayerLabel)
-        self.playerTwoLabel.setText("Player two ")
+        self.playerTwoLabel.setText("Player 2:")
 
         self.playerTwo = QLineEdit(self)
         self.playerTwo.resize(200, 50)
-        self.playerTwo.move(350, 450)
+        self.playerTwo.move(120, 450)
         self.playerTwo.setStyleSheet("QLineEdit { background-color: black; color: white; }")
         self.playerTwo.setFont(fontTB)
 
+        '''Player 3'''
+        self.playerThreeLabel = QLabel(self)
+        self.playerThreeLabel.move(400, 370)
+        self.playerThreeLabel.setStyleSheet('color: white;')
+        self.playerThreeLabel.setFont(fontPlayerLabel)
+        self.playerThreeLabel.setText("Player 3:")
+
+        self.playerThree = QLineEdit(self)
+        self.playerThree.resize(200, 50)
+        self.playerThree.move(500, 350)
+        self.playerThree.setStyleSheet("QLineEdit { background-color: black; color: white; }")
+        self.playerThree.setFont(fontTB)
+
+        '''Player 4 '''
+        self.playerFourLabel = QLabel(self)
+        self.playerFourLabel.move(400, 470)
+        self.playerFourLabel.setStyleSheet('color: white;')
+        self.playerFourLabel.setFont(fontPlayerLabel)
+        self.playerFourLabel.setText("Player 4:")
+
+        self.playerFour = QLineEdit(self)
+        self.playerFour.resize(200, 50)
+        self.playerFour.move(500, 450)
+        self.playerFour.setStyleSheet("QLineEdit { background-color: black; color: white; }")
+        self.playerFour.setFont(fontTB)
+
+        ################################################3
         self.playBtn = QPushButton("Play", self)
         self.playBtn.clicked.connect(self.startGame)
         self.playBtn.resize(200, 50)
@@ -86,13 +120,13 @@ class TwoPlayers(QWidget):
     def center(self):
         qr = self.frameGeometry()
         cp = QDesktopWidget().availableGeometry().center()
-
         qr.moveCenter(cp)
-
         self.move(qr.topLeft())
 
     def startGame(self):
         fistPlayer = self.playerOne.text()
         secondPlayer = self.playerTwo.text()
-        self.frame = BoardTwoPlayers(fistPlayer, secondPlayer)
+        thridPlayer = self.playerThree.text()
+        fourthPlayer = self.playerFour.text()
+        self.frame = Tournament(fistPlayer, secondPlayer, thridPlayer, fourthPlayer, 1)
         self.close()

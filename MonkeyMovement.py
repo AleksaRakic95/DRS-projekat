@@ -30,3 +30,6 @@ class MonkeyMovement(QObject):
         while not self.is_done:
             self.move_monkey_signal.emit()
             time.sleep(0.07 - self.level * 0.01)
+
+
+

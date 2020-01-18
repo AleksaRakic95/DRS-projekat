@@ -14,7 +14,7 @@ from DelayedEffectOfForce import DelayedEffectOfForce
 from GameOver import GameOver
 
 
-class Board(QFrame):
+class Tournament(QFrame):
     BoardWidth = 200
     BoardHeight = 200
     PocetnaDimenzija = 100
@@ -22,13 +22,12 @@ class Board(QFrame):
     y = 545
     x = 100
 
-    isJump = 0
-    v = 3
-    m = 2
-
-    def __init__(self, playerOneName=None, playerTwoName=None, level=None):
+    def __init__(self, playerOneName=None, playerTwoName=None, playerThreeName=None, playerFourName=None, level=None):
         self.nameOne = playerOneName
         self.nameTwo = playerTwoName
+        self.nameThree = playerThreeName
+        self.nameFour = playerFourName
+
         self.level = level
 
         super().__init__()
@@ -68,13 +67,12 @@ class Board(QFrame):
 
         self.point1 = 0
         self.point2 = 0
-        self.first = [True, False, False, False, False, False]
-        self.second = [True, False, False, False, False, False]
-
-        self.pamtiPrvog = 0
-        self.pamtiDrugog = 0
+        self.first = [True, False, False, False, False, False]            #platforma
+        self.second = [True, False, False, False, False, False]           #platforma
 
         self.pobednik = 0
+        self.numberOfMatch = 1
+        self.winnerName = ["", "", ""]
 
         self.initBoard()
 
@@ -152,8 +150,8 @@ class Board(QFrame):
 
         self.setPrincess()
         self.playerName()
+        self.setRivals()
         self.setLadder()
-        #self.setBarrel()
         self.setAvatars("Assets/Mario/marioR.png", "Assets/Mario/mario2L.png")
         self.setMonkey()
 
@@ -171,14 +169,22 @@ class Board(QFrame):
         if self.nameTwo == "":
             self.nameTwo = 'Player 2'
 
+        if self.nameThree == "":
+            self.nameThree = "Player 3"
+
+        if self.nameFour == "":
+            self.nameFour = "Player 4"
+
+        self.players = [self.nameOne, self.nameTwo, self.nameThree, self.nameFour]
+
         self.levelLabel = QLabel(self)
-        self.levelLabel.setText('Level ' + str(self.level))
+        self.levelLabel.setText("Semifinal 1")
         self.levelLabel.setFont(fontLbl)
         self.levelLabel.setStyleSheet("QLabel {color: white}")
         self.levelLabel.move(20, 20)
 
         self.playerOne = QLabel(self)
-        self.playerOne.setText(self.nameOne)
+        #self.playerOne.setText(self.nameOne)
         self.playerOne.setFont(fontLbl)
         self.playerOne.setStyleSheet("QLabel {color: red}")
         self.playerOne.move(400,20)
@@ -197,7 +203,7 @@ class Board(QFrame):
         self.player1lives.move(400, 60)
 
         self.playerTwo = QLabel(self)
-        self.playerTwo.setText(self.nameTwo)
+        #self.playerTwo.setText(self.nameTwo)
         self.playerTwo.setFont(fontLbl)
         self.playerTwo.setStyleSheet("QLabel {color: green}")
         self.playerTwo.move(640, 20)
@@ -214,6 +220,20 @@ class Board(QFrame):
         self.player2lives.setFont(fontLbl)
         self.player2lives.setStyleSheet("QLabel {color: green}")
         self.player2lives.move(640, 60)
+
+    def setRivals(self):
+        array = [0, 1, 2, 3]
+        rand1 = random.randrange(0,4)
+        rand2 = random.randrange(0,4)
+        while rand1 == rand2:
+            rand2 = random.randrange(0,4)
+        array.remove(rand1)
+        array.remove(rand2)
+        self.firstMatch = [self.players[rand1], self.players[rand2]]
+        self.secondMatch = [self.players[array[0]], self.players[array[1]]]
+
+        self.playerOne.setText(str(self.firstMatch[0]))
+        self.playerTwo.setText(str(self.firstMatch[1]))
 
     def setBorder(self, pixmapCropped, i, j, sirina, visina):
         label = QLabel(self)
@@ -359,8 +379,8 @@ class Board(QFrame):
                 self.avatarLable.move(40, 545)
             else:
                 self.isLive1 = False
-                self.avatarLable.clear()
-                self.avatarLable.move(1000, 1000)
+                #self.avatarLable.clear()
+                #self.avatarLable.move(1000, 1000)
         elif self.isHit(self.monkeyLabel, self.avatarLable2) and self.isLive2:
             print('Sudaaar')
             self.Lives2 = self.Lives2 - 1
@@ -369,8 +389,8 @@ class Board(QFrame):
                 self.avatarLable2.move(720, 545)
             else:
                 self.isLive2 = False
-                self.avatarLable2.clear()
-                self.avatarLable2.move(1100, 1100)
+                #self.avatarLable2.clear()
+                #self.avatarLable2.move(1100, 1100)
         self.isGameOver()
 
     def moveBarrel(self):
@@ -390,8 +410,8 @@ class Board(QFrame):
                     self.avatarLable.move(40, 545)
                 else:
                     self.isLive1 = False
-                    self.avatarLable.clear()
-                    self.avatarLable.move(1000, 1000)
+                    #self.avatarLable.clear()
+                    #self.avatarLable.move(1000, 1000)
             elif self.isHit(barrel, self.avatarLable2) and self.isLive2:
                 print('Sudaaar')
                 self.Lives2 = self.Lives2 - 1
@@ -403,8 +423,8 @@ class Board(QFrame):
                     self.avatarLable2.move(720, 545)
                 else:
                     self.isLive2 = False
-                    self.avatarLable2.clear()
-                    self.avatarLable2.move(1100, 1100)
+                    #self.avatarLable2.clear()
+                    #self.avatarLable2.move(1100, 1100)
         self.isGameOver()
 
     def isHit(self, first, second):
@@ -438,7 +458,6 @@ class Board(QFrame):
             elif rec2.y() + y2 in range(rec1.y(), rec1.y() + y1):
                 return True
 
-
     def setAttackBarrel(self):
         self.attackBurrel = QLabel(self)
         attackBurrelImage = QPixmap("Assets/Barrel/burrelBrown.png")
@@ -446,7 +465,6 @@ class Board(QFrame):
         self.attackBurrel.setStyleSheet('QLabel { background-color: transparent }')
         self.attackBurrel.setPixmap(QPixmap(attackBurrelCroppedImage))
         self.attackBurrel.move(385, 245)
-
 
     def keyPressEvent(self, event):
         self.key_notifyer.add_key(event.key())
@@ -777,26 +795,30 @@ class Board(QFrame):
             self.first[5] = False
 
         if self.first[0] == True:
-            self.point1 = 0 + self.pamtiPrvog
+            self.point1 = 0
             self.first[0] = False
         elif self.first[1] == True:
-            self.point1 = 1 + self.pamtiPrvog
+            self.point1 = 1
             self.first[1] = False
         elif self.first[2] == True:
-            self.point1 = 2 + self.pamtiPrvog
+            self.point1 = 2
             self.first[2] = False
         elif self.first[3] == True:
-            self.point1 = 3 + self.pamtiPrvog
+            self.point1 = 3
             self.first[3] = False
         elif self.first[4] == True:
-            self.point1 = 4 + self.pamtiPrvog
+            self.point1 = 4
             self.first[4] = False
         elif self.first[5] == True:
-            self.point1 = 5 + self.pamtiPrvog
+            self.point1 = 5
             self.first[5] = False
-            self.pamtiPrvog = self.point1
-            self.pamtiDrugog = self.point2
-            self.newLevel()
+            if self.numberOfMatch == 1:
+                self.winnerName[0] = self.firstMatch[0]
+            elif self.numberOfMatch == 2:
+                self.winnerName[1] = self.secondMatch[0]
+            elif self.numberOfMatch == 3:
+                self.winnerName[2] = self.winnerName[0]
+            self.nextMatch()
         else:
             self.point1 = self.point1
 
@@ -821,26 +843,30 @@ class Board(QFrame):
             self.second[5] = False
 
         if self.second[0] == True:
-            self.point2 = 0 + self.pamtiDrugog
+            self.point2 = 0
             self.second[0] = False
         elif self.second[1] == True:
-            self.point2 = 1 + self.pamtiDrugog
+            self.point2 = 1
             self.second[1] = False
         elif self.second[2] == True:
-            self.point2 = 2 + self.pamtiDrugog
+            self.point2 = 2
             self.second[2] = False
         elif self.second[3] == True:
-            self.point2 = 3 + self.pamtiDrugog
+            self.point2 = 3
             self.second[3] = False
         elif self.second[4] == True:
-            self.point2 = 4 + self.pamtiDrugog
+            self.point2 = 4
             self.second[4] = False
         elif self.second[5] == True:
-            self.point2 = 5 + self.pamtiDrugog
+            self.point2 = 5
             self.second[5] = False
-            self.pamtiDrugog = self.point2
-            self.pamtiPrvog = self.point1
-            self.newLevel()
+            if self.numberOfMatch == 1:
+                self.winnerName[0] = self.firstMatch[1]
+            elif self.numberOfMatch == 2:
+                self.winnerName[1] = self.secondMatch[1]
+            elif self.numberOfMatch == 3:
+                self.winnerName[2] = self.winnerName[1]
+            self.nextMatch()
         else:
             self.point2 = self.point2
 
@@ -895,84 +921,61 @@ class Board(QFrame):
         qr.moveCenter(cp)
         self.move(qr.topLeft())
 
-    def newLevel(self):
-        self.level = self.level + 1
-        self.levelLabel.setText('Level ' + str(self.level))
+    def nextMatch(self):
+        self.numberOfMatch = self.numberOfMatch + 1
+        if(self.numberOfMatch == 2):
+            self.levelLabel.setText("Semifinal 2")
+        else:
+            self.levelLabel.setText("FINAL")
 
-        #self.Lives1 = self.Lives1 + 3
-        #self.Lives2 = self.Lives2 + 3
+        self.Lives1 = 3
+        self.Lives2 = 3
+        self.player1lives.setText('Lives: ' + str(self.Lives1))
+        self.player2lives.setText('Lives: ' + str(self.Lives2))
 
-        #self.player1lives.setText('Lives: ' + str(self.Lives1))
-        #self.player2lives.setText('Lives: ' + str(self.Lives2))
+        self.isLive1 = True
+        self.isLive = True
 
         self.avatarLable.move(40, 545)
         self.avatarLable2.move(720, 545)
 
-        self.monkey_movement.die()
-        self.barrel_movement.die()
-
-        for b in self.barrels:
-            b.hide()
-            #self.barrels.remove(b)
-
-        self.barrels.clear()
-        '''
-        image1 = QPixmap('Assets/Brick/Platforma.png')
-        image2 = QPixmap('Assets/Brick/BluePlatform.png')
-        image3 = QPixmap('Assets/Brick/RedPlatform.png')
-
-        sirina = 800 / 54
-
-        for p in self.PlatformList:
-            p.hide()
-
-        self.PlatformList.clear()
-
-        if self.level % 3 == 1:
-            croppedImage = image1.scaled(20, 20, Qt.IgnoreAspectRatio, Qt.FastTransformation)
-
-            for i in range(1, 6):
-                for j in range(38):
-                    self.PlatformList.append(self.setPlatform(croppedImage, i, j, sirina))
-
-                self.PlatformList.append(self.setPlatform(croppedImage, i, 38, sirina))
-
-        elif self.level % 3 == 2:
-            croppedImage = image2.scaled(20, 20, Qt.IgnoreAspectRatio, Qt.FastTransformation)
-
-            for i in range(1, 6):
-                for j in range(38):
-                    self.PlatformList.append(self.setPlatform(croppedImage, i, j, sirina))
-
-                self.PlatformList.append(self.setPlatform(croppedImage, i, 38, sirina))
-
-        else:
-            croppedImage = image3.scaled(20, 20, Qt.IgnoreAspectRatio, Qt.FastTransformation)
-
-            for i in range(1, 6):
-                for j in range(38):
-                    self.PlatformList.append(self.setPlatform(croppedImage, i, j, sirina))
-
-                self.PlatformList.append(self.setPlatform(croppedImage, i, 38, sirina))'''
-
         self.avatarLable.show()
         self.avatarLable2.show()
 
-        #self.monkey_movement.move_monkey_signal.connect(self.moveMonkey)
-        self.monkey_movement.start(self.level)
 
-        #self.barrel_movement.move_barrel_signal.connect(self.moveBarrel)
-        self.barrel_movement.start(self.level)
+        if (self.numberOfMatch == 2):
+            self.playerOne.setText(str(self.secondMatch[0]))
+            self.playerTwo.setText(str(self.secondMatch[1]))
+        elif (self.numberOfMatch == 3):
+            self.playerOne.setText(self.winnerName[0])
+            self.playerTwo.setText(self.winnerName[1])
+        else:
+            self.gameOver = GameOver(str(self.winnerName[2]), 10)
+            self.close()
 
     def isGameOver(self):
         if self.Lives1 > 0 and self.Lives2 == 0:
             self.pobednik = 1
+            if self.numberOfMatch == 1:
+                self.winnerName[0] = self.firstMatch[0]
+            elif self.numberOfMatch == 2:
+                self.winnerName[1] = self.secondMatch[0]
+            elif self.numberOfMatch == 3:
+                self.winnerName[2] = self.winnerName[0]
+            self.nextMatch()
         elif self.Lives1 == 0 and self.Lives2 > 0:
             self.pobednik = 2
+            if self.numberOfMatch == 1:
+                self.winnerName[0] = self.firstMatch[1]
+            elif self.numberOfMatch == 2:
+                self.winnerName[1] = self.secondMatch[1]
+            elif self.numberOfMatch == 3:
+                self.winnerName[2] = self.winnerName[1]
+            self.nextMatch()
         elif self.Lives1 == 0 and self.Lives2 == 0:
             #gameOver(self.pobdnik)
             #print("Pobednik: " + str(self.pobednik))
-            winnerName = ""
+            '''winnerName = ""
             score = 0
             if self.pobednik == 1:
                 winnerName = self.nameOne
@@ -982,7 +985,8 @@ class Board(QFrame):
                 score = self.point2
 
             self.gameOver = GameOver(winnerName, score)
-            self.close()
+            self.close()'''
+            self.nextMatch()
 
     def checkCollisionWithUnexpectedForce(self):
         if self.LifeExist:
@@ -1024,8 +1028,8 @@ class Board(QFrame):
                 self.avatarLable.move(40, 545)
             else:
                 self.isLive1 = False
-                self.avatarLable.clear()
-                self.avatarLable.move(1100, 1100)
+                #self.avatarLable.clear()
+                #self.avatarLable.move(1100, 1100)
 
             self.isGameOver()
 
@@ -1041,187 +1045,7 @@ class Board(QFrame):
                 self.avatarLable2.move(720, 545)
             else:
                 self.isLive2 = False
-                self.avatarLable2.clear()
-                self.avatarLable2.move(1100, 1100)
+                #self.avatarLable2.clear()
+                #self.avatarLable2.move(1100, 1100)
 
             self.isGameOver()
-
-class BoardTwoPlayers(QFrame):
-    startingPositionOne = 100
-    startingPositionTwo = 500
-
-    def __init__(self, playerOneName=None, playerTwoName=None):
-        self.pOneName = playerOneName
-        self.pTwoName = playerTwoName
-
-        super().__init__()
-
-        self.initBoardTwoPlayers()
-
-        self.key_notifyer = KeyNotifyer()
-        self.key_notifyer.key_signal.connect(self.__update_position__)
-        self.key_notifyer.start()
-
-    def initBoardTwoPlayers(self):
-        self.resize(800, 600)
-        self.center()
-        self.setWindowTitle("Donkey Kong")
-
-        self.setStyleSheet("QFrame {background-color: black;} ")
-
-        width = 800 / 54
-        height = 600 / 40
-
-        brickImage = QPixmap('Assets/Brick/Brick.png')
-        brickImageCropped = brickImage.scaled(width, height, Qt.IgnoreAspectRatio, Qt.FastTransformation)
-
-        self.BorderList = []
-
-        for i in range(40):
-            for j in range(54):
-                if i == 0 or i == 39:
-                    self.BorderList.append(self.setBorder(brickImageCropped, i, j, width, height))
-                else:
-                    if j == 0 or j == 53:
-                        self.BorderList.append(self.setBorder(brickImageCropped, i, j, width, height))
-
-        platformImage = QPixmap('Assets/Brick/Platforma.png')
-        platformImageCropped = platformImage.scaled(20, 20, Qt.IgnoreAspectRatio, Qt.FastTransformation)
-
-        self.PlatformList = []
-
-        for i in range(1, 6):
-            for j in range(36):
-                self.PlatformList.append(self.setPlatform(platformImageCropped, i, j, width))
-
-        self.playerNames()
-        self.setBarrel()
-        self.setAvatars("Assets/Mario/marioR.png", "Assets/Mario/marioL.png")
-
-        self.show()
-
-    def playerNames(self):
-        self.player1 = QLabel(self)
-        self.player2 = QLabel(self)
-
-        fontLbl = QFont()
-        fontLbl.setFamily("Arcade Normal")
-        fontLbl.setPointSize(8)
-
-        self.player1.setText(self.pOneName)
-        self.player1.setFont(fontLbl)
-        self.player1.setStyleSheet("QLabel {color: white;} ")
-        self.player1.move(20, 20)
-
-        self.player2.setText(self.pTwoName)
-        self.player2.setFont(fontLbl)
-        self.player2.setStyleSheet("QLabel {color: white;} ")
-        self.player2.move(700, 20)
-
-    def setBorder(self, pixmapCropped, i, j, width, height):
-        label = QLabel(self)
-        label.setPixmap(QPixmap(pixmapCropped))
-        label.move(j * width, i * height)
-        return label
-
-    def setPlatform(self, pixmapCropped, i, j, width):
-        label = QLabel(self)
-        label.setPixmap(QPixmap(pixmapCropped))
-
-        if i % 2 == 1:
-            if i == 5:
-                if j > 12 and j < 20:
-                    label.move(width + j * 20, 600 - i * 90 - 15)
-            else:
-                label.move(width + j * 20, 600 - i * 90 - 15)
-        else:
-            if i == 4:
-                if j > 28:
-                    label.move(50 + width + j * 20, 600 - i * 90 - 15)
-                else:
-                    label.move(width + j * 20, 600 - i * 90 - 15)
-            else:
-                label.move(50 + width + j * 20, 600 - i * 90 - 15)
-
-        return label
-
-    def setBarrel(self):
-        self.barrelLable = QLabel(self)
-        barrelImage = QPixmap('Assets/Brick/Barel.png')
-        barrelImageCropped = barrelImage.scaled(50, 35, Qt.IgnoreAspectRatio, Qt.FastTransformation)
-        self.barrelLable.setPixmap(QPixmap(barrelImageCropped))
-        self.barrelLable.move(25, 550)
-
-        self.movie = QMovie("Assets/Brick/Flame3.gif", QByteArray(), self)
-        self.flameLabel = QLabel(self)
-        self.flameLabel.move(27, 520)
-        self.movie.setCacheMode(QMovie.CacheAll)
-        self.flameLabel.setMovie(self.movie)
-        self.movie.start()
-        self.movie.loopCount()
-
-    def setAvatars(self, avatarOne, avatarTwo):
-        self.avatarOneLbl = QLabel(self)
-        avatarImageOne = QPixmap(avatarOne)
-        self.avatarOneLbl.setStyleSheet('QLabel { background-color: transparent }')
-        #avatarImageOne.fill(Qt.transparent)
-        avatarImageOneCropped = avatarImageOne.scaled(30, 40, Qt.IgnoreAspectRatio, Qt.FastTransformation)
-        self.avatarOneLbl.setPixmap(QPixmap(avatarImageOneCropped))
-        self.avatarOneLbl.move(100, 545)
-
-        self.avatarTwoLbl = QLabel(self)
-        avatarImageTwo = QPixmap(avatarTwo)
-        self.avatarTwoLbl.setStyleSheet('QLabel { background-color: transparent }')
-        #avatarImageTwo.fill(Qt.transparent)
-        avatarImageTwoCropped = avatarImageTwo.scaled(30, 40, Qt.IgnoreAspectRatio, Qt.FastTransformation)
-        self.avatarTwoLbl.setPixmap(QPixmap(avatarImageTwoCropped))
-        self.avatarTwoLbl.move(500, 545)
-
-    def setAvatarOneMove(self, avatar):
-        avatarImage = QPixmap(avatar)
-        avatarImageCropped = avatarImage.scaled(30, 40, Qt.IgnoreAspectRatio, Qt.FastTransformation)
-        self.avatarOneLbl.setPixmap(QPixmap(avatarImageCropped))
-
-    def setAvatarTwoMove(self, avatar):
-        avatarImage = QPixmap(avatar)
-        avatarImageCropped = avatarImage.scaled(30, 40, Qt.IgnoreAspectRatio, Qt.FastTransformation)
-        self.avatarTwoLbl.setPixmap(QPixmap(avatarImageCropped))
-
-    def keyPressEvent(self, event):
-        self.key_notifyer.add_key(event.key())
-
-    def keyReleaseEvent(self, event):
-        self.key_notifyer.remove_key(event.key())
-
-    def __update_position__(self, key):
-        player1 = self.avatarOneLbl.geometry()
-        player2 = self.avatarTwoLbl.geometry()
-
-        ''' Moving first player '''
-
-        if key == Qt.Key_Right:
-            if player1.x() < 755:
-                self.avatarOneLbl.setGeometry(player1.x() + 5, player1.y(), player1.width(), player1.height())
-        elif key == Qt.Key_Left:
-            if player1.x() > 81:
-                self.avatarOneLbl.setGeometry(player1.x() - 5, player1.y(), player1.width(), player1.height())
-
-        ''' Moving second player '''
-
-        if key == Qt.Key_D:
-            if player2.x() < 755:
-                self.avatarTwoLbl.setGeometry(player2.x() + 5, player2.y(), player2.width(), player2.height())
-        elif key == Qt.Key_A:
-            if player2.x() > 81:
-                self.avatarTwoLbl.setGeometry(player2.x() - 5, player2.y(), player2.width(), player2.height())
-
-    def closeEvent(self, event):
-        self.key_notifyer.die()
-
-
-
-    def center(self):
-        qr = self.frameGeometry()
-        cp = QDesktopWidget().availableGeometry().center()
-        qr.moveCenter(cp)
-        self.move(qr.topLeft())
