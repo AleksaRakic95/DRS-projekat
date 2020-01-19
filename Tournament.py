@@ -922,6 +922,12 @@ class Tournament(QFrame):
         self.move(qr.topLeft())
 
     def nextMatch(self):
+        self.monkey_movement.die()
+        self.barrel_movement.die()
+
+        self.monkey_movement.start(1)
+        self.barrel_movement.start(1)
+
         self.numberOfMatch = self.numberOfMatch + 1
         if(self.numberOfMatch == 2):
             self.levelLabel.setText("Semifinal 2")
