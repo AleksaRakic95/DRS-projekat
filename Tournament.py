@@ -346,15 +346,13 @@ class Tournament(QFrame):
         self.monkeyLabel.setPixmap(QPixmap(monkeyCroppedImage))
         self.monkeyLabel.move(375, 155)
 
+        self.manjiRand = random.randrange(20, 375)
+        self.veciRand = random.randrange(self.manjiRand, 720)
+
     def moveMonkey(self):
         rect = self.monkeyLabel.geometry()
 
-        if rect.x() == 20:
-            self.hitWall = True
-        elif rect.x() == 720:
-            self.hitWall = False
-
-        rand = random.randint(0, 800)
+        rand = random.randrange(self.manjiRand, self.veciRand)
 
         if rand % 50 == 0:
             barrel = QLabel(self)
@@ -367,9 +365,17 @@ class Tournament(QFrame):
             self.barrels[len(self.barrels) - 1].show()
 
         if self.hitWall:
-            self.monkeyLabel.move(rect.x() + 5, rect.y())
+            if rect.x() >= self.veciRand:
+                self.hitWall = False
+                self.manjiRand = random.randrange(0, self.veciRand)
+            else:
+                self.monkeyLabel.move(rect.x() + 5, rect.y())
         else:
-            self.monkeyLabel.move(rect.x() - 5, rect.y())
+            if rect.x() <= self.manjiRand:
+                self.hitWall = True
+                self.veciRand = random.randrange(self.manjiRand, 720)
+            else:
+                self.monkeyLabel.move(rect.x() - 5, rect.y())
 
         if self.isHit(self.monkeyLabel, self.avatarLable) and self.isLive1:
             print('Sudaaar')
@@ -925,6 +931,7 @@ class Tournament(QFrame):
         self.monkey_movement.die()
         self.barrel_movement.die()
 
+        self.monkeyLabel.move(375, 155)
         self.monkey_movement.start(1)
         self.barrel_movement.start(1)
 

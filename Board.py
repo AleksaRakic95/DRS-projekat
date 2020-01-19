@@ -326,15 +326,13 @@ class Board(QFrame):
         self.monkeyLabel.setPixmap(QPixmap(monkeyCroppedImage))
         self.monkeyLabel.move(375, 155)
 
+        self.manjiRand = random.randrange(20,375)
+        self.veciRand = random.randrange(self.manjiRand, 720)
+
     def moveMonkey(self):
         rect = self.monkeyLabel.geometry()
 
-        if rect.x() == 20:
-            self.hitWall = True
-        elif rect.x() == 720:
-            self.hitWall = False
-
-        rand = random.randint(0, 800)
+        rand = random.randrange(self.manjiRand, self.veciRand)
 
         if rand % 50 == 0:
             barrel = QLabel(self)
@@ -347,9 +345,17 @@ class Board(QFrame):
             self.barrels[len(self.barrels) - 1].show()
 
         if self.hitWall:
-            self.monkeyLabel.move(rect.x() + 5, rect.y())
+            if rect.x() >= self.veciRand:
+                self.hitWall = False
+                self.manjiRand = random.randrange(0, self.veciRand)
+            else:
+                self.monkeyLabel.move(rect.x() + 5, rect.y())
         else:
-            self.monkeyLabel.move(rect.x() - 5, rect.y())
+            if rect.x() <= self.manjiRand:
+                self.hitWall = True
+                self.veciRand = random.randrange(self.manjiRand, 720)
+            else:
+                self.monkeyLabel.move(rect.x() - 5, rect.y())
 
         if self.isHit(self.monkeyLabel, self.avatarLable) and self.isLive1:
             print('Sudaaar')
@@ -899,12 +905,7 @@ class Board(QFrame):
         self.level = self.level + 1
         self.levelLabel.setText('Level ' + str(self.level))
 
-        #self.Lives1 = self.Lives1 + 3
-        #self.Lives2 = self.Lives2 + 3
-
-        #self.player1lives.setText('Lives: ' + str(self.Lives1))
-        #self.player2lives.setText('Lives: ' + str(self.Lives2))
-
+        self.monkeyLabel.move(375, 155)
         self.avatarLable.move(40, 545)
         self.avatarLable2.move(720, 545)
 
@@ -1046,182 +1047,4 @@ class Board(QFrame):
 
             self.isGameOver()
 
-class BoardTwoPlayers(QFrame):
-    startingPositionOne = 100
-    startingPositionTwo = 500
 
-    def __init__(self, playerOneName=None, playerTwoName=None):
-        self.pOneName = playerOneName
-        self.pTwoName = playerTwoName
-
-        super().__init__()
-
-        self.initBoardTwoPlayers()
-
-        self.key_notifyer = KeyNotifyer()
-        self.key_notifyer.key_signal.connect(self.__update_position__)
-        self.key_notifyer.start()
-
-    def initBoardTwoPlayers(self):
-        self.resize(800, 600)
-        self.center()
-        self.setWindowTitle("Donkey Kong")
-
-        self.setStyleSheet("QFrame {background-color: black;} ")
-
-        width = 800 / 54
-        height = 600 / 40
-
-        brickImage = QPixmap('Assets/Brick/Brick.png')
-        brickImageCropped = brickImage.scaled(width, height, Qt.IgnoreAspectRatio, Qt.FastTransformation)
-
-        self.BorderList = []
-
-        for i in range(40):
-            for j in range(54):
-                if i == 0 or i == 39:
-                    self.BorderList.append(self.setBorder(brickImageCropped, i, j, width, height))
-                else:
-                    if j == 0 or j == 53:
-                        self.BorderList.append(self.setBorder(brickImageCropped, i, j, width, height))
-
-        platformImage = QPixmap('Assets/Brick/Platforma.png')
-        platformImageCropped = platformImage.scaled(20, 20, Qt.IgnoreAspectRatio, Qt.FastTransformation)
-
-        self.PlatformList = []
-
-        for i in range(1, 6):
-            for j in range(36):
-                self.PlatformList.append(self.setPlatform(platformImageCropped, i, j, width))
-
-        self.playerNames()
-        self.setBarrel()
-        self.setAvatars("Assets/Mario/marioR.png", "Assets/Mario/marioL.png")
-
-        self.show()
-
-    def playerNames(self):
-        self.player1 = QLabel(self)
-        self.player2 = QLabel(self)
-
-        fontLbl = QFont()
-        fontLbl.setFamily("Arcade Normal")
-        fontLbl.setPointSize(8)
-
-        self.player1.setText(self.pOneName)
-        self.player1.setFont(fontLbl)
-        self.player1.setStyleSheet("QLabel {color: white;} ")
-        self.player1.move(20, 20)
-
-        self.player2.setText(self.pTwoName)
-        self.player2.setFont(fontLbl)
-        self.player2.setStyleSheet("QLabel {color: white;} ")
-        self.player2.move(700, 20)
-
-    def setBorder(self, pixmapCropped, i, j, width, height):
-        label = QLabel(self)
-        label.setPixmap(QPixmap(pixmapCropped))
-        label.move(j * width, i * height)
-        return label
-
-    def setPlatform(self, pixmapCropped, i, j, width):
-        label = QLabel(self)
-        label.setPixmap(QPixmap(pixmapCropped))
-
-        if i % 2 == 1:
-            if i == 5:
-                if j > 12 and j < 20:
-                    label.move(width + j * 20, 600 - i * 90 - 15)
-            else:
-                label.move(width + j * 20, 600 - i * 90 - 15)
-        else:
-            if i == 4:
-                if j > 28:
-                    label.move(50 + width + j * 20, 600 - i * 90 - 15)
-                else:
-                    label.move(width + j * 20, 600 - i * 90 - 15)
-            else:
-                label.move(50 + width + j * 20, 600 - i * 90 - 15)
-
-        return label
-
-    def setBarrel(self):
-        self.barrelLable = QLabel(self)
-        barrelImage = QPixmap('Assets/Brick/Barel.png')
-        barrelImageCropped = barrelImage.scaled(50, 35, Qt.IgnoreAspectRatio, Qt.FastTransformation)
-        self.barrelLable.setPixmap(QPixmap(barrelImageCropped))
-        self.barrelLable.move(25, 550)
-
-        self.movie = QMovie("Assets/Brick/Flame3.gif", QByteArray(), self)
-        self.flameLabel = QLabel(self)
-        self.flameLabel.move(27, 520)
-        self.movie.setCacheMode(QMovie.CacheAll)
-        self.flameLabel.setMovie(self.movie)
-        self.movie.start()
-        self.movie.loopCount()
-
-    def setAvatars(self, avatarOne, avatarTwo):
-        self.avatarOneLbl = QLabel(self)
-        avatarImageOne = QPixmap(avatarOne)
-        self.avatarOneLbl.setStyleSheet('QLabel { background-color: transparent }')
-        #avatarImageOne.fill(Qt.transparent)
-        avatarImageOneCropped = avatarImageOne.scaled(30, 40, Qt.IgnoreAspectRatio, Qt.FastTransformation)
-        self.avatarOneLbl.setPixmap(QPixmap(avatarImageOneCropped))
-        self.avatarOneLbl.move(100, 545)
-
-        self.avatarTwoLbl = QLabel(self)
-        avatarImageTwo = QPixmap(avatarTwo)
-        self.avatarTwoLbl.setStyleSheet('QLabel { background-color: transparent }')
-        #avatarImageTwo.fill(Qt.transparent)
-        avatarImageTwoCropped = avatarImageTwo.scaled(30, 40, Qt.IgnoreAspectRatio, Qt.FastTransformation)
-        self.avatarTwoLbl.setPixmap(QPixmap(avatarImageTwoCropped))
-        self.avatarTwoLbl.move(500, 545)
-
-    def setAvatarOneMove(self, avatar):
-        avatarImage = QPixmap(avatar)
-        avatarImageCropped = avatarImage.scaled(30, 40, Qt.IgnoreAspectRatio, Qt.FastTransformation)
-        self.avatarOneLbl.setPixmap(QPixmap(avatarImageCropped))
-
-    def setAvatarTwoMove(self, avatar):
-        avatarImage = QPixmap(avatar)
-        avatarImageCropped = avatarImage.scaled(30, 40, Qt.IgnoreAspectRatio, Qt.FastTransformation)
-        self.avatarTwoLbl.setPixmap(QPixmap(avatarImageCropped))
-
-    def keyPressEvent(self, event):
-        self.key_notifyer.add_key(event.key())
-
-    def keyReleaseEvent(self, event):
-        self.key_notifyer.remove_key(event.key())
-
-    def __update_position__(self, key):
-        player1 = self.avatarOneLbl.geometry()
-        player2 = self.avatarTwoLbl.geometry()
-
-        ''' Moving first player '''
-
-        if key == Qt.Key_Right:
-            if player1.x() < 755:
-                self.avatarOneLbl.setGeometry(player1.x() + 5, player1.y(), player1.width(), player1.height())
-        elif key == Qt.Key_Left:
-            if player1.x() > 81:
-                self.avatarOneLbl.setGeometry(player1.x() - 5, player1.y(), player1.width(), player1.height())
-
-        ''' Moving second player '''
-
-        if key == Qt.Key_D:
-            if player2.x() < 755:
-                self.avatarTwoLbl.setGeometry(player2.x() + 5, player2.y(), player2.width(), player2.height())
-        elif key == Qt.Key_A:
-            if player2.x() > 81:
-                self.avatarTwoLbl.setGeometry(player2.x() - 5, player2.y(), player2.width(), player2.height())
-
-    def closeEvent(self, event):
-        self.key_notifyer.die()
-
-
-
-    def center(self):
-        qr = self.frameGeometry()
-        cp = QDesktopWidget().availableGeometry().center()
-        qr.moveCenter(cp)
-        self.move(qr.topLeft())
