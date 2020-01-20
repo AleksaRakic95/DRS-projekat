@@ -3,6 +3,8 @@ from PyQt5.QtGui import QColor, QPixmap, QMovie, QPainter, QFont, QTextBlock
 from PyQt5.QtCore import Qt, QByteArray, pyqtSignal
 import sys, time, random
 
+from multiprocessing import Process, Queue
+
 from key_notifyer import KeyNotifyer
 from MonkeyMovement import MonkeyMovement
 from BarrelMovement import BarrelMovement
@@ -12,16 +14,10 @@ from UnexpectedForceBomb import UnexpectedForceBomb
 from UnexpectedForce import UnexpectedForce
 from DelayedEffectOfForce import DelayedEffectOfForce
 from GameOver import GameOver
+from PositionOfUnexpextedForce import ForceBomb, ForceLife
 
 
 class Tournament(QFrame):
-    BoardWidth = 200
-    BoardHeight = 200
-    PocetnaDimenzija = 100
-
-    y = 545
-    x = 100
-
     def __init__(self, playerOneName=None, playerTwoName=None, playerThreeName=None, playerFourName=None, level=None):
         self.nameOne = playerOneName
         self.nameTwo = playerTwoName
@@ -31,6 +27,18 @@ class Tournament(QFrame):
         self.level = level
 
         super().__init__()
+
+        self.setFixedSize(800, 600)
+
+        self.queueLifeX = Queue()
+        self.queueLifeY = Queue()
+        self.process = Process(target=ForceLife, args=[self.queueLifeX, self.queueLifeY])
+        self.process.start()
+
+        self.queueBombX = Queue()
+        self.queueBombY = Queue()
+        self.process2 = Process(target=ForceBomb, args=[self.queueBombX, self.queueBombY])
+        self.process2.start()
 
         self.PlatformChanged = 0
 
@@ -72,7 +80,7 @@ class Tournament(QFrame):
 
         self.pobednik = 0
         self.numberOfMatch = 1
-        self.winnerName = ["", "", ""]
+        self.winnerName = ["", "", "", 0]
 
         self.initBoard()
 
@@ -566,6 +574,8 @@ class Tournament(QFrame):
         self.delayed_effect_of_force.die()
         self.unexpected_force_life.quit()
         self.unexpected_force_bomb.quit()
+        self.process.terminate()
+        self.process2.terminate()
 
     def moveLeft(self):
         player = self.avatarLable.geometry()
@@ -826,6 +836,7 @@ class Tournament(QFrame):
                 self.winnerName[1] = self.secondMatch[0]
             elif self.numberOfMatch == 3:
                 self.winnerName[2] = self.winnerName[0]
+                self.winnerName[3] = self.point1
             self.nextMatch()
         else:
             self.point1 = self.point1
@@ -874,6 +885,7 @@ class Tournament(QFrame):
                 self.winnerName[1] = self.secondMatch[1]
             elif self.numberOfMatch == 3:
                 self.winnerName[2] = self.winnerName[1]
+                self.winnerName[3] = self.point2
             self.nextMatch()
         else:
             self.point2 = self.point2
@@ -888,12 +900,10 @@ class Tournament(QFrame):
         forceLifeImageCropped = forceLifeImage.scaled(20, 20, Qt.IgnoreAspectRatio, Qt.FastTransformation)
         self.forceLife.setPixmap(QPixmap(forceLifeImageCropped))
 
-        randX = random.randrange(15, 765)
-        randY = random.randrange(0, 4)
+        randX = self.queueLifeX.get()
+        randY = self.queueLifeY.get()
 
-        nivoi = [565, 475, 385, 295, 205]
-        positionY = nivoi[randY]
-        self.forceLife.move(randX, positionY)
+        self.forceLife.move(randX, randY)
         self.forceLife.show()
 
         self.LifeExist = True
@@ -909,12 +919,10 @@ class Tournament(QFrame):
         forceBombImageCropped = forceBombImage.scaled(20, 20, Qt.IgnoreAspectRatio, Qt.FastTransformation)
         self.forceBomb.setPixmap(QPixmap(forceBombImageCropped))
 
-        randX = random.randrange(15, 765)
-        randY = random.randrange(0, 4)
+        randX = self.queueBombX.get()
+        randY = self.queueBombY.get()
 
-        nivoi = [565, 475, 385, 295, 205]
-        positionY = nivoi[randY]
-        self.forceBomb.move(randX, positionY)
+        self.forceBomb.move(randX, randY)
         self.forceBomb.show()
 
         self.bombExist = True
@@ -969,7 +977,7 @@ class Tournament(QFrame):
             self.playerOne.setText(self.winnerName[0])
             self.playerTwo.setText(self.winnerName[1])
         else:
-            self.gameOver = GameOver(str(self.winnerName[2]), 10)
+            self.gameOver = GameOver(str(self.winnerName[2]), self.winnerName[3])
             self.close()
 
     def isGameOver(self):
@@ -981,6 +989,7 @@ class Tournament(QFrame):
                 self.winnerName[1] = self.secondMatch[0]
             elif self.numberOfMatch == 3:
                 self.winnerName[2] = self.winnerName[0]
+                self.winnerName[3] = self.point1
             self.nextMatch()
         elif self.Lives1 == 0 and self.Lives2 > 0:
             self.pobednik = 2
@@ -990,21 +999,9 @@ class Tournament(QFrame):
                 self.winnerName[1] = self.secondMatch[1]
             elif self.numberOfMatch == 3:
                 self.winnerName[2] = self.winnerName[1]
+                self.winnerName[3] = self.point2
             self.nextMatch()
         elif self.Lives1 == 0 and self.Lives2 == 0:
-            #gameOver(self.pobdnik)
-            #print("Pobednik: " + str(self.pobednik))
-            '''winnerName = ""
-            score = 0
-            if self.pobednik == 1:
-                winnerName = self.nameOne
-                score = self.point1
-            elif self.pobednik == 2:
-                winnerName = self.nameTwo
-                score = self.point2
-
-            self.gameOver = GameOver(winnerName, score)
-            self.close()'''
             self.nextMatch()
 
     def checkCollisionWithUnexpectedForce(self):

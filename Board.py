@@ -3,6 +3,8 @@ from PyQt5.QtGui import QColor, QPixmap, QMovie, QPainter, QFont, QTextBlock
 from PyQt5.QtCore import Qt, QByteArray, pyqtSignal
 import sys, time, random
 
+from multiprocessing import Process, Queue
+
 from key_notifyer import KeyNotifyer
 from MonkeyMovement import MonkeyMovement
 from BarrelMovement import BarrelMovement
@@ -12,26 +14,27 @@ from UnexpectedForceBomb import UnexpectedForceBomb
 from UnexpectedForce import UnexpectedForce
 from DelayedEffectOfForce import DelayedEffectOfForce
 from GameOver import GameOver
-
+from PositionOfUnexpextedForce import ForceBomb, ForceLife
 
 class Board(QFrame):
-    BoardWidth = 200
-    BoardHeight = 200
-    PocetnaDimenzija = 100
-
-    y = 545
-    x = 100
-
-    isJump = 0
-    v = 3
-    m = 2
-
     def __init__(self, playerOneName=None, playerTwoName=None, level=None):
         self.nameOne = playerOneName
         self.nameTwo = playerTwoName
         self.level = level
 
         super().__init__()
+
+        self.setFixedSize(800, 600)
+
+        self.queueLifeX = Queue()
+        self.queueLifeY = Queue()
+        self.process = Process(target=ForceLife, args=[self.queueLifeX, self.queueLifeY])
+        self.process.start()
+
+        self.queueBombX = Queue()
+        self.queueBombY = Queue()
+        self.process2 = Process(target=ForceBomb, args=[self.queueBombX, self.queueBombY])
+        self.process2.start()
 
         self.PlatformChanged = 0
 
@@ -548,6 +551,8 @@ class Board(QFrame):
         self.delayed_effect_of_force.die()
         self.unexpected_force_life.quit()
         self.unexpected_force_bomb.quit()
+        self.process.terminate()
+        self.process2.terminate()
 
     def moveLeft(self):
         player = self.avatarLable.geometry()
@@ -862,12 +867,10 @@ class Board(QFrame):
         forceLifeImageCropped = forceLifeImage.scaled(20, 20, Qt.IgnoreAspectRatio, Qt.FastTransformation)
         self.forceLife.setPixmap(QPixmap(forceLifeImageCropped))
 
-        randX = random.randrange(15, 765)
-        randY = random.randrange(0, 4)
+        randX = self.queueLifeX.get()
+        randY = self.queueLifeY.get()
 
-        nivoi = [565, 475, 385, 295, 205]
-        positionY = nivoi[randY]
-        self.forceLife.move(randX, positionY)
+        self.forceLife.move(randX, randY)
         self.forceLife.show()
 
         self.LifeExist = True
@@ -883,12 +886,11 @@ class Board(QFrame):
         forceBombImageCropped = forceBombImage.scaled(20, 20, Qt.IgnoreAspectRatio, Qt.FastTransformation)
         self.forceBomb.setPixmap(QPixmap(forceBombImageCropped))
 
-        randX = random.randrange(15, 765)
-        randY = random.randrange(0, 4)
+        randX = self.queueBombX.get()
+        randY = self.queueBombY.get()
 
-        nivoi = [565, 475, 385, 295, 205]
-        positionY = nivoi[randY]
-        self.forceBomb.move(randX, positionY)
+        self.forceBomb.move(randX, randY)
+
         self.forceBomb.show()
 
         self.bombExist = True
