@@ -27,3 +27,20 @@ class PointsCounter(QObject):
         while not self.is_done:
             self.point_counter_signal.emit()
             time.sleep(0.2)
+
+'''import time
+import random
+
+from multiprocessing import Pipe, Process
+
+from Board import position1
+
+
+class PointsCounter(Process):
+    def __init__(self, pipe: Pipe):
+        super().__init__(target=self.move_enemies, args=[pipe])
+
+    def poeni(self, pipe: Pipe):
+        while True:
+            #print("TREBALO BI DRUGI->", multiprocessing.current_process().pid)
+            if position1 == True:'''

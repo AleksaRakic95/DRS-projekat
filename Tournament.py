@@ -181,26 +181,26 @@ class Tournament(QFrame):
         self.levelLabel.setText("Semifinal 1")
         self.levelLabel.setFont(fontLbl)
         self.levelLabel.setStyleSheet("QLabel {color: white}")
-        self.levelLabel.move(20, 20)
+        self.levelLabel.move(380, 20)
 
         self.playerOne = QLabel(self)
         #self.playerOne.setText(self.nameOne)
         self.playerOne.setFont(fontLbl)
         self.playerOne.setStyleSheet("QLabel {color: red}")
-        self.playerOne.move(400,20)
+        self.playerOne.move(30,20)
 
         self.player1score = QLabel(self)
         self.player1score.setText('Score: ')
         self.player1score.setFont(fontLbl)
         self.player1score.setStyleSheet("QLabel {color: red}")
         #self.player1score.move(400, 40)
-        self.player1score.setGeometry(400, 35, 100, 20)
+        self.player1score.setGeometry(30, 35, 100, 20)
 
         self.player1lives = QLabel(self)
         self.player1lives.setText('Lives: ' + str(self.Lives1))
         self.player1lives.setFont(fontLbl)
         self.player1lives.setStyleSheet("QLabel {color: red}")
-        self.player1lives.move(400, 60)
+        self.player1lives.move(30, 60)
 
         self.playerTwo = QLabel(self)
         #self.playerTwo.setText(self.nameTwo)
@@ -248,7 +248,7 @@ class Tournament(QFrame):
         if i < 5:
             label.move(sirina + j * 20, 600 - i * 90 - 15)
         else:
-            if j > 12 and j < 20:
+            if j > 14 and j < 24:
                 label.move(sirina + j * 20, 600 - i * 90 - 15)
             else:
                 label.move(800, 600)
@@ -260,7 +260,7 @@ class Tournament(QFrame):
     def setPrincess(self):
         self.movie = QMovie("Assets/Princess/Princess.gif", QByteArray(), self)
         self.princessLabel = QLabel(self)
-        self.princessLabel.setGeometry(285, 95, 80, 40)
+        self.princessLabel.setGeometry(383, 95, 80, 40)
         self.movie.setCacheMode(QMovie.CacheAll)
         self.princessLabel.setMovie(self.movie)
         self.movie.start()
@@ -301,13 +301,15 @@ class Tournament(QFrame):
         self.ladderPosition(ladderImageCropped, 725, 245)
 
         # Merdevine na petoj platformi
-        self.ladderPosition(ladderImageCropped, 382, 155)
+        '''self.ladderPosition(ladderImageCropped, 382, 155)
         self.ladderPosition(ladderImageCropped, 241, 155)
         self.ladderPosition(ladderImage2Cropped, 241, 85)
         self.ladderPosition(ladderImage2Cropped, 241, 15)
         self.ladderPosition(ladderImageCropped, 191, 155)
         self.ladderPosition(ladderImage2Cropped, 191, 85)
-        self.ladderPosition(ladderImage2Cropped, 191, 15)
+        self.ladderPosition(ladderImage2Cropped, 191, 15)'''
+        self.ladderPosition(ladderImageCropped, 320, 155)
+        self.ladderPosition(ladderImageCropped, 452, 155)
 
     def ladderPosition(self, ladderImageCropped, x, y):
         self.ladderlabel = QLabel(self)
@@ -367,7 +369,7 @@ class Tournament(QFrame):
         if self.hitWall:
             if rect.x() >= self.veciRand:
                 self.hitWall = False
-                self.manjiRand = random.randrange(0, self.veciRand)
+                self.manjiRand = random.randrange(20, self.veciRand)
             else:
                 self.monkeyLabel.move(rect.x() + 5, rect.y())
         else:
@@ -502,7 +504,7 @@ class Tournament(QFrame):
                     self.movePlayerFlags = 1
                     self.moveUp()
             elif rect.y() <= 185 and rect.y() > 95:
-                if rect.x() == 384:
+                if rect.x() == 320 or rect.x() == 456:
                     self.movePlayerFlags = 1
                     self.moveUp()
         elif key == Qt.Key_Down and self.isLive1:
@@ -515,7 +517,7 @@ class Tournament(QFrame):
                     self.movePlayerFlags = 1
                     self.moveDown()
             elif rect.y() < 185 and rect.y() >= 95:
-                if rect.x() == 384:
+                if rect.x() == 320 or rect.x() == 456:
                     self.movePlayerFlags = 1
                     self.moveDown()
         elif key == Qt.Key_A  and self.isLive2:
@@ -538,7 +540,7 @@ class Tournament(QFrame):
                     self.movePlayerFlags = 2
                     self.moveUp()
             elif rect2.y() <= 185 and rect2.y() > 95:
-                if rect2.x() == 384:
+                if rect2.x() == 320 or rect2.x() == 456:
                     self.movePlayerFlags = 2
                     self.moveUp()
         elif key == Qt.Key_S and self.isLive2:
@@ -551,7 +553,7 @@ class Tournament(QFrame):
                     self.movePlayerFlags = 2
                     self.moveDown()
             elif rect2.y() < 185 and rect2.y() >= 95:
-                if rect2.x() == 384:
+                if rect2.x() == 320 or rect2.x() == 456:
                     self.movePlayerFlags = 2
                     self.moveDown()
 
@@ -756,7 +758,7 @@ class Tournament(QFrame):
             if x == 48 or x == 728:
                 return True
         elif nivo <= 183 + dodatak and nivo >= 95 + dodatak:
-            if x == 384:
+            if x == 320 or x == 456:
                 return True
 
         ''' Move down on broken Ladder '''
@@ -931,6 +933,10 @@ class Tournament(QFrame):
         self.monkey_movement.die()
         self.barrel_movement.die()
 
+        for b in self.barrels:
+            b.hide()
+        self.barrels.clear()
+
         self.monkeyLabel.move(375, 155)
         self.monkey_movement.start(1)
         self.barrel_movement.start(1)
@@ -947,7 +953,7 @@ class Tournament(QFrame):
         self.player2lives.setText('Lives: ' + str(self.Lives2))
 
         self.isLive1 = True
-        self.isLive = True
+        self.isLive2 = True
 
         self.avatarLable.move(40, 545)
         self.avatarLable2.move(720, 545)
