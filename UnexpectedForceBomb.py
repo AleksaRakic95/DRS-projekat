@@ -16,5 +16,5 @@ class UnexpectedForceBomb(QThread):
             rand_sleep = random.randrange(5, 10)
             time.sleep(rand_sleep)
             self.show_bomb_signal.emit()
-            time.sleep(10)
+            time.sleep(7)
             self.hide_bomb_signal.emit()

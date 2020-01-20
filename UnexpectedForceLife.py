@@ -16,5 +16,5 @@ class UnexpectedForceLife(QThread):
             rand_sleep = random.randrange(5,10)
             time.sleep(rand_sleep)
             self.show_life_signal.emit()
-            time.sleep(20)
+            time.sleep(5)
             self.hide_life_signal.emit()
